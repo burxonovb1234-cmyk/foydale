@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; connect-src 'self' https://api.mymemory.translated.net; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#1f7a46">
-<meta name="description" content="Namoz vaqtlari va dehqon yordamchisi. Bepul, internetsiz ishlaydi.">
+<meta name="description" content="Namoz vaqtlari, dehqon yordamchisi va tarjimon. Bepul.">
 <title>foydale.uz</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -21,9 +21,11 @@ header{position:sticky;top:0;z-index:5;background:var(--bg);padding:12px 16px 10
 .logo{width:38px;height:38px;border-radius:10px;background:var(--pri);color:var(--onpri);display:grid;place-items:center;font-size:22px}
 h1{font-size:20px;margin:0;line-height:1.1}
 .sub{margin:0;color:var(--mut);font-size:13px}
-label.sel{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut)}
-select,input{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0}
+.hrow{display:flex;align-items:center;gap:8px}
+label.sel{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--mut);flex:1;min-width:0}
+select,input,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px;min-width:0}
 select{flex:1}
+#lang{flex:0 0 auto;width:auto}
 main{max-width:560px;margin:0 auto;padding:12px 16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
 .card h2{font-size:16px;margin:0 0 8px}
@@ -60,9 +62,10 @@ button.alt{background:var(--pri2);color:var(--ink)}
 .grid2 .full{grid-column:1/-1}
 .res{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--pri2);font-weight:600}
 nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;justify-content:center;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:6}
-nav .in{display:flex;gap:6px;width:100%;max-width:560px}
-nav button{flex:1;background:transparent;color:var(--mut);padding:8px 4px;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav .in{display:flex;gap:4px;width:100%;max-width:560px}
+nav button{flex:1;background:transparent;color:var(--mut);padding:8px 2px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 nav button .ic{font-size:20px}
+nav button .lb{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 nav button[aria-selected="true"]{background:var(--pri2);color:var(--ink)}
 .btnlink{display:inline-block;background:var(--pri);color:var(--onpri);text-decoration:none;font-weight:600;padding:10px 14px;border-radius:12px}
 .sw{width:42px;height:42px;border-radius:50%;padding:0;border:3px solid transparent}
@@ -79,140 +82,212 @@ p{margin:6px 0}
 .pwd-checks{display:flex;flex-direction:column;gap:6px;font-size:14px}
 .pwd-checks div{color:var(--mut)}
 .pwd-crack{text-align:center;margin-top:10px}
+/* Tarjimon */
+.trbar{display:flex;align-items:center;gap:6px}
+.trbar select{flex:1}
+.trbar .swap{flex:0 0 auto;padding:9px 12px;font-size:18px;line-height:1}
+.trin{width:100%;min-height:110px;resize:vertical;margin-top:10px;display:block}
+.trout{margin-top:10px;padding:12px;border-radius:12px;background:var(--pri2);min-height:56px;white-space:pre-wrap;word-break:break-word;font-size:18px;font-weight:600}
+.trout.err{background:var(--warn);color:var(--warnink);font-size:14px;font-weight:500}
+.trout.idle{color:var(--mut);font-weight:400;font-size:14px}
+.tract{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.trcnt{text-align:right;margin:2px 2px 0}
+/* Yashirin statistika (faqat muallif) */
+#verBox{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+.stgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.stbox{background:var(--pri2);border-radius:12px;padding:10px;text-align:center}
+.stbox b{display:block;font-size:24px;font-variant-numeric:tabular-nums}
+.stbox span{font-size:12px;color:var(--mut)}
+.stlist{margin:6px 0 10px}
+.stlist h3{font-size:14px;margin:10px 0 4px}
+.bar{display:flex;align-items:center;gap:8px;font-size:13px;margin:3px 0}
+.bar .bl{flex:0 0 96px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .bt{flex:1;height:10px;background:var(--bg);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .bf{height:100%;background:var(--pri);border-radius:6px}
+.bar .bv{flex:0 0 36px;text-align:right;font-variant-numeric:tabular-nums}
+.admrow{display:flex;gap:8px;margin-top:8px}
+.admrow input{flex:1}
 </style>
 </head>
 <body>
 <header>
   <div class="brand">
     <div class="logo" aria-hidden="true">&#127807;</div>
-    <div><h1>foydale.uz</h1><p class="sub">Namoz va dehqon yordamchisi</p></div>
+    <div><h1>foydale.uz</h1><p class="sub" data-i="sub"></p></div>
   </div>
-  <label class="sel"><span>Viloyat</span><select id="region" aria-label="Viloyat"></select></label>
+  <div class="hrow">
+    <label class="sel"><span data-i="region"></span><select id="region" data-al="region"></select></label>
+    <select id="lang" aria-label="Til / Язык / Language"></select>
+  </div>
 </header>
 
 <main>
 <!-- ================= NAMOZ ================= -->
 <section id="tab-namoz">
   <div class="card big">
-    <div class="nm" id="nxName">Keyingi namoz</div>
+    <div class="nm" id="nxName">&nbsp;</div>
     <div class="tm" id="nxTime">--:--</div>
     <div class="cd" id="nxLeft"></div>
   </div>
   <p class="date" id="todayLine"></p>
   <div class="card" id="times"></div>
   <details>
-    <summary>Haftalik jadval</summary>
+    <summary data-i="week"></summary>
     <div class="in tw"><table id="week"></table></div>
   </details>
   <div class="card">
-    <h2>Qibla</h2>
+    <h2 data-i="qibla"></h2>
     <p id="qText" class="mut"></p>
-    <svg class="dial" viewBox="0 0 200 200" role="img" aria-label="Qibla yo'nalishi">
+    <svg class="dial" viewBox="0 0 200 200" role="img" data-al="qaria">
       <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="2"/>
-      <text x="100" y="22" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7">SH</text>
-      <text x="100" y="190" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7">J</text>
-      <text x="14" y="105" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7">G'</text>
-      <text x="186" y="105" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7">S</text>
+      <text x="100" y="22" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7" data-i="cN"></text>
+      <text x="100" y="190" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7" data-i="cS"></text>
+      <text x="14" y="105" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7" data-i="cW"></text>
+      <text x="186" y="105" text-anchor="middle" font-size="14" fill="currentColor" opacity=".7" data-i="cE"></text>
       <g class="arrow" id="qArrow"><polygon points="100,22 112,100 100,92 88,100"/><circle cx="100" cy="100" r="6"/></g>
     </svg>
-    <p class="mut" style="text-align:center">Yashil o'q qibla tomonni ko'rsatadi. Yuqori tomon: shimol.</p>
-    <div style="text-align:center"><button class="alt" id="compassBtn" type="button">Kompasni yoqish</button></div>
+    <p class="mut" style="text-align:center" data-i="qhint"></p>
+    <div style="text-align:center"><button class="alt" id="compassBtn" type="button" data-i="compass_btn"></button></div>
     <p class="mut" id="compassMsg" style="text-align:center"></p>
   </div>
   <details>
-    <summary>Sozlamalar</summary>
+    <summary data-i="settings"></summary>
     <div class="in">
-      <label class="mut" for="method">Hisoblash usuli</label>
+      <label class="mut" for="method" data-i="method_l"></label>
       <select id="method" style="width:100%"></select>
-      <p class="mut">Asr vaqti hanafiy mazhabi bo'yicha (soya ikki baravar).</p>
-      <p class="mut" style="margin-top:12px">Rasmiy taqvim bilan farq bo'lsa, daqiqa tuzatish kiriting (-15 dan +15 gacha):</p>
+      <p class="mut" data-i="asr_note"></p>
+      <p class="mut" style="margin-top:12px" data-i="adj_note"></p>
       <div id="adjBox"></div>
-      <p class="mut" style="margin-top:12px">Ilova rangi:</p>
+      <p class="mut" style="margin-top:12px" data-i="color_l"></p>
       <div class="chips" id="swBox"></div>
     </div>
   </details>
-  <div class="note">Vaqtlar quyosh holatidan telefon ichida hisoblanadi va viloyat markazi uchun. Boshqa shahar va tumanlarda bir necha daqiqa farq bo'lishi mumkin. Muhim holatlarda masjid yoki rasmiy taqvim bilan solishtiring.</div>
+  <div class="note" data-i="prayer_note"></div>
 </section>
 
 <!-- ================= DEHQON ================= -->
 <section id="tab-dehqon" hidden>
   <div class="card">
-    <h2>Hozir ekiladigan ekinlar</h2>
+    <h2 data-i="now_title"></h2>
     <p class="mut" id="nowLine"></p>
     <div class="chips" id="nowCrops"></div>
   </div>
   <div class="card">
-    <h2>Ekin tanlang</h2>
-    <select id="cropSel" style="width:100%" aria-label="Ekin"></select>
+    <h2 data-i="choose_crop"></h2>
+    <select id="cropSel" style="width:100%" data-al="crop_aria"></select>
     <div id="cropInfo"></div>
   </div>
   <div class="card">
-    <h2>Urug' hisoblagichi</h2>
+    <h2 data-i="seed_title"></h2>
     <div class="grid2">
-      <div><label class="mut" for="area">Maydon</label><input id="area" type="number" inputmode="decimal" min="0" step="any" placeholder="masalan, 20"></div>
-      <div><label class="mut" for="unit">Birlik</label><select id="unit" style="width:100%"><option value="sotix">sotix</option><option value="ga">gektar</option></select></div>
-      <div class="full"><label class="mut" for="norm">Me'yor (kg/gektar)</label><input id="norm" type="number" inputmode="decimal" min="0" step="any" placeholder="agronomdan so'rang yoki pastdagi tugmani bosing" style="width:100%"></div>
+      <div><label class="mut" for="area" data-i="area_l"></label><input id="area" type="number" inputmode="decimal" min="0" step="any" data-ph="area_ph"></div>
+      <div><label class="mut" for="unit" data-i="unit_l"></label><select id="unit" style="width:100%"><option value="sotix" data-i="u_sotix"></option><option value="ga" data-i="u_ga"></option></select></div>
+      <div class="full"><label class="mut" for="norm" data-i="norm_l"></label><input id="norm" type="number" inputmode="decimal" min="0" step="any" data-ph="norm_ph" style="width:100%"></div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button type="button" id="calcBtn">Hisobla</button>
-      <button type="button" class="alt" id="seedBtn">Odatiy me'yorni qo'y</button>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <button type="button" id="calcBtn" data-i="calc_btn"></button>
+      <button type="button" class="alt" id="seedBtn" data-i="seed_btn"></button>
     </div>
     <div class="res" id="calcOut" hidden></div>
-    <p class="mut">1 gektar = 100 sotix. Me'yor nav, tuproq va usulga qarab farq qiladi. O'g'it va dori miqdorini faqat agronom tavsiyasi bo'yicha oling.</p>
+    <p class="mut" data-i="seed_note"></p>
   </div>
-  <div class="note">Ekish muddatlari taxminiy: yil ob-havosi, nav va tuproqqa qarab bir-ikki hafta o'zgaradi. Aniq muddatni tuman qishloq xo'jaligi bo'limi yoki agronomdan so'rang.</div>
+  <div class="note" data-i="crop_note"></div>
+</section>
+
+<!-- ================= TARJIMON ================= -->
+<section id="tab-tarjima" hidden>
+  <div class="card">
+    <h2 data-i="tr_title"></h2>
+    <div class="trbar">
+      <select id="trFrom" data-al="tr_from"></select>
+      <button type="button" class="alt swap" id="trSwap" data-al="tr_swap">&#8644;</button>
+      <select id="trTo" data-al="tr_to"></select>
+    </div>
+    <textarea id="trIn" class="trin" maxlength="500" data-ph="tr_ph" data-al="tr_text"></textarea>
+    <div class="mut trcnt"><span id="trCnt">0</span>/500</div>
+    <div class="trout idle" id="trOut" aria-live="polite"></div>
+    <div class="tract">
+      <button type="button" id="trGo" data-i="tr_go"></button>
+      <button type="button" class="alt" id="trCopy" data-i="tr_copy"></button>
+      <button type="button" class="alt" id="trClear" data-i="tr_clear"></button>
+    </div>
+    <p class="mut" id="trMsg"></p>
+  </div>
+  <div class="note" data-i="tr_note"></div>
 </section>
 
 <!-- ================= XAVFSIZLIK ================= -->
 <section id="tab-xavfsizlik" hidden>
   <div class="card">
-    <h2>🔐 Parol kuchini tekshirish</h2>
-    <p class="mut">Parolingiz faqat shu yerda, telefoningizda qoladi — hech qayerga yuborilmaydi.</p>
+    <h2 data-i="pw_title"></h2>
+    <p class="mut" data-i="pw_priv"></p>
     <div class="pwd-wrap">
-      <input type="password" id="pwdInput" placeholder="Parolni shu yerga yozing..." autocomplete="off">
+      <input type="password" id="pwdInput" data-ph="pw_ph" autocomplete="off">
       <span class="pwd-eye" id="pwdEye">👁️</span>
     </div>
     <div class="pwd-meter-wrap"><div class="pwd-meter-fill" id="pwdMeter"></div></div>
-    <div class="pwd-label" id="pwdLabel">Parol kiriting</div>
+    <div class="pwd-label" id="pwdLabel"></div>
     <div class="pwd-checks" id="pwdChecks"></div>
     <p class="mut pwd-crack" id="pwdCrack"></p>
   </div>
-  <div class="note">Maslahat: uzun va eslab qolish oson jumla eng kuchli parol hisoblanadi, masalan "Men2010YilidaMaktabniTamomladim!" kabi. Har bir sayt uchun boshqa parol ishlating va imkon bo'lsa ikki bosqichli tasdiqlash (2FA) yoqing.</div>
+  <div class="note" data-i="pw_tip"></div>
 </section>
 
 <!-- ================= HAQIDA ================= -->
 <section id="tab-haqida" hidden>
   <div class="card">
-    <h2>foydale.uz haqida</h2>
-    <p>Bepul ilova: viloyatlar bo'yicha namoz vaqtlari, qibla, dehqonlar uchun ekin kalendari va parol xavfsizligini tekshirish.</p>
-    <p class="mut">Muallif: <strong id="author"></strong></p>
-    <p class="mut">Versiya 1.1</p>
+    <h2 data-i="ab_title"></h2>
+    <p data-i="ab_desc"></p>
+    <p class="mut"><span data-i="ab_author"></span> <strong id="author"></strong></p>
+    <p class="mut" id="verBox"><span data-i="ab_ver"></span> <span id="verNum">1.3</span></p>
   </div>
+
+  <!-- Yashirin: versiya raqami 5 marta bosilganda ochiladi -->
+  <div class="card" id="adminLogin" hidden>
+    <h2>Kirish</h2>
+    <div class="admrow">
+      <input type="password" id="admPw" autocomplete="off" placeholder="Parol" aria-label="Parol">
+      <button type="button" id="admGo">OK</button>
+    </div>
+    <p class="mut" id="admMsg"></p>
+  </div>
+  <div class="card" id="adminStats" hidden>
+    <h2>Statistika</h2>
+    <p class="mut">Bu raqamlar faqat shu qurilma (telefon/brauzer) bo'yicha. Boshqa foydalanuvchilar hisobi bu yerda ko'rinmaydi.</p>
+    <div id="stBody"></div>
+    <div class="admrow">
+      <button type="button" class="alt" id="stClose">Yopish</button>
+      <button type="button" class="alt" id="stClear">Tozalash</button>
+    </div>
+  </div>
+
   <div class="card" id="supportCard">
-    <h2>Yordam va aloqa</h2>
-    <p>Savol, xato yoki taklif bo'lsa, Telegramda yozing.</p>
-    <p><a id="tgLink" class="btnlink" href="#" target="_blank" rel="noopener noreferrer">Telegramda yozish</a></p>
+    <h2 data-i="sup_title"></h2>
+    <p data-i="sup_text"></p>
+    <p><a id="tgLink" class="btnlink" href="#" target="_blank" rel="noopener noreferrer" data-i="sup_btn"></a></p>
     <p class="mut" id="tgName"></p>
   </div>
   <div class="card">
-    <h2>Xavfsizlik</h2>
-    <p>Ilova hech qanday ma'lumot yig'maydi va internetga ma'lumot yubormaydi. Ro'yxatdan o'tish, reklama va kuzatuv yo'q. Faqat "Telegramda yozish" tugmasini o'zingiz bossangiz, Telegram ochiladi.</p>
-    <p>Faqat tanlagan viloyatingiz va sozlamalaringiz shu telefonning o'zida saqlanadi.</p>
-    <p>Joylashuv va boshqa ruxsatlar so'ralmaydi. Kompas faqat siz tugmani bossangiz ishlaydi.</p>
-    <p>Parol tekshiruvchi ham to'liq telefon ichida ishlaydi — kiritilgan parol hech qachon internetga yuborilmaydi.</p>
+    <h2 data-i="sec_title"></h2>
+    <p data-i="sec1"></p>
+    <p data-i="sec2"></p>
+    <p data-i="sec3"></p>
+    <p data-i="sec4"></p>
+    <p data-i="sec5"></p>
   </div>
   <div class="card">
-    <h2>Telefonga o'rnatish</h2>
-    <p>Brauzer menyusidan "Bosh ekranga qo'shish" yoki "Ilovani o'rnatish" ni tanlang. Shundan keyin internetsiz ham ochiladi.</p>
+    <h2 data-i="inst_title"></h2>
+    <p data-i="inst_text"></p>
   </div>
 </section>
 </main>
 
-<nav aria-label="Bo'limlar"><div class="in">
-  <button type="button" data-tab="namoz" aria-selected="true"><span class="ic">&#128332;</span>Namoz</button>
-  <button type="button" data-tab="dehqon" aria-selected="false"><span class="ic">&#127806;</span>Dehqon</button>
-  <button type="button" data-tab="xavfsizlik" aria-selected="false"><span class="ic">&#128272;</span>Xavfsizlik</button>
-  <button type="button" data-tab="haqida" aria-selected="false"><span class="ic">&#8505;</span>Haqida</button>
+<nav data-al="nav_aria"><div class="in">
+  <button type="button" data-tab="namoz" aria-selected="true"><span class="ic">&#128332;</span><span class="lb" data-i="tab_namoz"></span></button>
+  <button type="button" data-tab="dehqon" aria-selected="false"><span class="ic">&#127806;</span><span class="lb" data-i="tab_dehqon"></span></button>
+  <button type="button" data-tab="tarjima" aria-selected="false"><span class="ic">&#127760;</span><span class="lb" data-i="tab_tarjima"></span></button>
+  <button type="button" data-tab="xavfsizlik" aria-selected="false"><span class="ic">&#128272;</span><span class="lb" data-i="tab_parol"></span></button>
+  <button type="button" data-tab="haqida" aria-selected="false"><span class="ic">&#8505;</span><span class="lb" data-i="tab_haqida"></span></button>
 </div></nav>
 
 <script>
@@ -221,6 +296,11 @@ p{margin:6px 0}
 
 var AUTHOR = 'Bexruz'; // <-- muallif ismi
 var TELEGRAM = 'masudjonovich';   // <-- Telegram username'ingiz, @ belgisisiz
+
+// Yashirin statistika paroli (faqat SHA-256 hash saqlanadi, parolning o'zi kodda yo'q).
+// Almashtirish: printf '%s' "foydale.uz|v1|YANGI_PAROL" | sha256sum
+var ADMIN_HASH = 'f9f79d82be39ad6522edec788821234202dd2c9126fe3bae9f3098b25a3aa11e';
+var ADMIN_SALT = 'foydale.uz|v1|';
 
 //#PURE-START
 var TZ = 5; // O'zbekiston: UTC+5, yozgi vaqt yo'q
@@ -280,9 +360,6 @@ function qiblaBearing(lat, lng){
   return fixa(b, 360);
 }
 
-var MONTHS = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-function fmtDate(ms){ var dt = new Date(ms); return dt.getUTCDate() + '-' + MONTHS[dt.getUTCMonth()]; }
-
 function cropStatus(windows, off, y, m, d){
   var today = Date.UTC(y, m - 1, d), DAY = 86400000;
   var best = null;
@@ -299,52 +376,359 @@ function cropStatus(windows, off, y, m, d){
 }
 //#PURE-END
 
+/* ============ SHA-256 (parol tekshirish uchun, kutubxonasiz) ============ */
+var SHA_K = [
+  0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+  0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+  0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+  0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+  0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+  0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+  0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+  0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+];
+function ror(x, n){ return (x >>> n) | (x << (32 - n)); }
+function utf8Bytes(s){
+  var u = unescape(encodeURIComponent(s)), out = [];
+  for (var i = 0; i < u.length; i++) out.push(u.charCodeAt(i));
+  return out;
+}
+function sha256(msg){
+  var H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var b = utf8Bytes(msg), len = b.length;
+  b.push(0x80);
+  while (b.length % 64 !== 56) b.push(0);
+  var hi = Math.floor(len * 8 / 0x100000000), lo = (len * 8) >>> 0;
+  b.push((hi >>> 24) & 255, (hi >>> 16) & 255, (hi >>> 8) & 255, hi & 255,
+         (lo >>> 24) & 255, (lo >>> 16) & 255, (lo >>> 8) & 255, lo & 255);
+  var w = new Array(64), i, j;
+  for (i = 0; i < b.length; i += 64){
+    for (j = 0; j < 16; j++) w[j] = (b[i + 4*j] << 24) | (b[i + 4*j + 1] << 16) | (b[i + 4*j + 2] << 8) | b[i + 4*j + 3];
+    for (j = 16; j < 64; j++){
+      var s0 = ror(w[j-15], 7) ^ ror(w[j-15], 18) ^ (w[j-15] >>> 3);
+      var s1 = ror(w[j-2], 17) ^ ror(w[j-2], 19) ^ (w[j-2] >>> 10);
+      w[j] = (w[j-16] + s0 + w[j-7] + s1) | 0;
+    }
+    var a = H[0], bb = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (j = 0; j < 64; j++){
+      var S1 = ror(e, 6) ^ ror(e, 11) ^ ror(e, 25);
+      var ch = (e & f) ^ (~e & g);
+      var t1 = (h + S1 + ch + SHA_K[j] + w[j]) | 0;
+      var S0 = ror(a, 2) ^ ror(a, 13) ^ ror(a, 22);
+      var maj = (a & bb) ^ (a & c) ^ (bb & c);
+      var t2 = (S0 + maj) | 0;
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = bb; bb = a; a = (t1 + t2) | 0;
+    }
+    H[0] = (H[0] + a) | 0; H[1] = (H[1] + bb) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+    H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+  }
+  var hex = '';
+  for (i = 0; i < 8; i++){ var x = (H[i] >>> 0).toString(16); hex += ('00000000' + x).slice(-8); }
+  return hex;
+}
+
+/* ====================== TILLAR (uz / ru / en) ====================== */
+var L = { uz: 0, ru: 1, en: 2 };
+var UI_LANGS = [['uz', 'O\'zbekcha'], ['ru', 'Русский'], ['en', 'English']];
+
+var T = {
+uz: {
+  sub: "Namoz, dehqon va tarjimon yordamchisi",
+  region: "Viloyat",
+  nav_aria: "Bo'limlar",
+  tab_namoz: "Namoz", tab_dehqon: "Dehqon", tab_tarjima: "Tarjima", tab_parol: "Parol", tab_haqida: "Haqida",
+  next_prayer: "Keyingi namoz: {n}", left: "{t} dan keyin",
+  p_fajr: "Bomdod", p_sunrise: "Quyosh", p_dhuhr: "Peshin", p_asr: "Asr", p_maghrib: "Shom", p_isha: "Xufton",
+  week: "Haftalik jadval", th_date: "Sana",
+  qibla: "Qibla", qtext: "{c} uchun qibla: {d}° ({n})", qaria: "Qibla yo'nalishi",
+  qhint: "Yashil o'q qibla tomonni ko'rsatadi. Yuqori tomon: shimol.",
+  cN: "SH", cS: "J", cW: "G'", cE: "S",
+  dirs: ["shimol","shimoli-sharq","sharq","janubi-sharq","janub","janubi-g'arb","g'arb","shimoli-g'arb"],
+  compass_btn: "Kompasni yoqish",
+  c_nodev: "Bu qurilmada kompas yo'q.", c_ok: "Telefonni tekis ushlang, metall va magnitdan uzoqroq turing.",
+  c_denied: "Kompasga ruxsat berilmadi.", c_err: "Kompas ishlamadi.",
+  settings: "Sozlamalar", method_l: "Hisoblash usuli",
+  asr_note: "Asr vaqti hanafiy mazhabi bo'yicha (soya ikki baravar).",
+  adj_note: "Rasmiy taqvim bilan farq bo'lsa, daqiqa tuzatish kiriting (-15 dan +15 gacha):",
+  color_l: "Ilova rangi:", swatch: "{n} rang",
+  prayer_note: "Vaqtlar quyosh holatidan telefon ichida hisoblanadi va viloyat markazi uchun. Boshqa shahar va tumanlarda bir necha daqiqa farq bo'lishi mumkin. Muhim holatlarda masjid yoki rasmiy taqvim bilan solishtiring.",
+  now_title: "Hozir ekiladigan ekinlar",
+  now_line: "{date}, {c} viloyati", now_ok: ":",
+  now_none: ": hozir asosiy ekish muddati yo'q. Pastdan ekin tanlab, keyingi muddatni ko'ring.",
+  choose_crop: "Ekin tanlang", crop_aria: "Ekin",
+  st_now: "Hozir ekish vaqti. Muddat tugashiga {n} kun qoldi ({d} gacha).",
+  st_next: "Ekishga {n} kun qoldi ({d} dan).",
+  st_none: "Muddat topilmadi.",
+  range_l: "Ekish oralig'i ({c}): {r}",
+  seed_title: "Urug' hisoblagichi", area_l: "Maydon", area_ph: "masalan, 20", unit_l: "Birlik",
+  u_sotix: "sotix", u_ga: "gektar", norm_l: "Me'yor (kg/gektar)",
+  norm_ph: "agronomdan so'rang yoki pastdagi tugmani bosing",
+  calc_btn: "Hisobla", seed_btn: "Odatiy me'yorni qo'y",
+  calc_err: "Maydon va me'yorni to'g'ri kiriting (0 dan katta son).",
+  calc_total: "Jami: {kg} kg", calc_bags: " (taxminan {b} ta 50 kg lik qop)", calc_area: ". Maydon: {g} ga.",
+  seed_none: "Bu ekin uchun odatiy me'yor qo'yilmagan. Agronomdan so'rab, o'zingiz kiriting.",
+  seed_note: "1 gektar = 100 sotix. Me'yor nav, tuproq va usulga qarab farq qiladi. O'g'it va dori miqdorini faqat agronom tavsiyasi bo'yicha oling.",
+  crop_note: "Ekish muddatlari taxminiy: yil ob-havosi, nav va tuproqqa qarab bir-ikki hafta o'zgaradi. Aniq muddatni tuman qishloq xo'jaligi bo'limi yoki agronomdan so'rang.",
+  tr_title: "🌐 Tarjimon", tr_ph: "Tarjima qilinadigan matnni yozing... (masalan: pichoq)",
+  tr_from: "Qaysi tildan", tr_to: "Qaysi tilga", tr_swap: "Tillarni almashtirish", tr_text: "Matn",
+  tr_idle: "Tarjima shu yerda chiqadi", tr_ing: "Tarjima qilinmoqda...",
+  tr_off: "Internet yo'q. Tarjimon ishlashi uchun internetga ulaning.",
+  tr_limit: "Bugungi bepul limit tugadi. Birozdan keyin yoki ertaga urinib ko'ring.",
+  tr_fail: "Tarjima qilib bo'lmadi. Tillarni tekshirib, qayta urinib ko'ring.",
+  tr_neterr: "Ulanishda xatolik. Internetni tekshirib, qayta urinib ko'ring.",
+  tr_go: "Tarjima qil", tr_copy: "Nusxa olish", tr_clear: "Tozalash",
+  tr_copied: "Nusxa olindi.", tr_copy_fail: "Nusxa olib bo'lmadi. Matnni qo'lda belgilab oling.",
+  tr_copy_first: "Nusxa olish uchun avval tarjima qiling.",
+  tr_note: "Tarjimon internet orqali ishlaydi (MyMemory xizmati). Yozgan matningiz tarjima uchun shu xizmatga yuboriladi, shuning uchun parol va shaxsiy ma'lumot yozmang. Mashina tarjimasi 100% aniq bo'lmasligi mumkin, muhim hujjatlarni mutaxassisga tekshirtiring.",
+  pw_title: "🔐 Parol kuchini tekshirish",
+  pw_priv: "Parolingiz faqat shu yerda, telefoningizda qoladi — hech qayerga yuborilmaydi.",
+  pw_ph: "Parolni shu yerga yozing...", pw_empty: "Parol kiriting",
+  pw_chk: ["Kamida 8 ta belgi","Katta harf (A-Z)","Kichik harf (a-z)","Raqam (0-9)","Maxsus belgi (!@#$...)","Oddiy/mashhur parol emas"],
+  pw_weak: "❌ Zaif parol", pw_mid: "⚠️ O'rtacha parol", pw_strong: "✅ Kuchli parol",
+  pw_crack: "Taxminiy buzish vaqti: {t}",
+  pw_crack_common: "Buzish vaqti: bir necha soniya (mashhur parollar ro'yxatida bor)",
+  pw_units: ["ming yil","yil","oy","kun","soat","daqiqa","soniya"], pw_instant: "bir zumda",
+  pw_tip: "Maslahat: uzun va eslab qolish oson jumla eng kuchli parol hisoblanadi, masalan \"Men2010YilidaMaktabniTamomladim!\" kabi. Har bir sayt uchun boshqa parol ishlating va imkon bo'lsa ikki bosqichli tasdiqlash (2FA) yoqing.",
+  ab_title: "foydale.uz haqida",
+  ab_desc: "Bepul ilova: viloyatlar bo'yicha namoz vaqtlari, qibla, dehqonlar uchun ekin kalendari, tarjimon va parol xavfsizligini tekshirish.",
+  ab_author: "Muallif:", ab_ver: "Versiya",
+  sup_title: "Yordam va aloqa", sup_text: "Savol, xato yoki taklif bo'lsa, Telegramda yozing.", sup_btn: "Telegramda yozish",
+  sec_title: "Xavfsizlik",
+  sec1: "Namoz, qibla, dehqon va parol bo'limlari to'liq telefon ichida ishlaydi va internetga hech narsa yubormaydi. Ro'yxatdan o'tish va reklama yo'q.",
+  sec2: "Faqat “Tarjima” bo'limida siz yozgan matn tarjima qilish uchun MyMemory xizmatiga yuboriladi. Telegram faqat “Telegramda yozish” tugmasini o'zingiz bossangiz ochiladi.",
+  sec3: "Tanlagan viloyatingiz, tilingiz, sozlamalaringiz va oddiy foydalanish hisobi (qaysi bo'lim necha marta ochilgani) faqat shu telefonning o'zida saqlanadi va hech qayerga yuborilmaydi. Yozgan matn va parollaringiz saqlanmaydi.",
+  sec4: "Joylashuv va boshqa ruxsatlar so'ralmaydi. Kompas faqat siz tugmani bossangiz ishlaydi.",
+  sec5: "Parol tekshiruvchi ham to'liq telefon ichida ishlaydi — kiritilgan parol hech qachon internetga yuborilmaydi.",
+  inst_title: "Telefonga o'rnatish",
+  inst_text: "Brauzer menyusidan “Bosh ekranga qo'shish” yoki “Ilovani o'rnatish” ni tanlang. Namoz, dehqon va parol bo'limlari internetsiz ham ochiladi. Tarjimon uchun internet kerak."
+},
+ru: {
+  sub: "Намаз, фермер и переводчик",
+  region: "Регион",
+  nav_aria: "Разделы",
+  tab_namoz: "Намаз", tab_dehqon: "Фермер", tab_tarjima: "Перевод", tab_parol: "Пароль", tab_haqida: "О нас",
+  next_prayer: "Следующий намаз: {n}", left: "через {t}",
+  p_fajr: "Фаджр", p_sunrise: "Восход", p_dhuhr: "Зухр", p_asr: "Аср", p_maghrib: "Магриб", p_isha: "Иша",
+  week: "Расписание на неделю", th_date: "Дата",
+  qibla: "Кибла", qtext: "Кибла для {c}: {d}° ({n})", qaria: "Направление киблы",
+  qhint: "Зелёная стрелка указывает на киблу. Верх — север.",
+  cN: "С", cS: "Ю", cW: "З", cE: "В",
+  dirs: ["север","северо-восток","восток","юго-восток","юг","юго-запад","запад","северо-запад"],
+  compass_btn: "Включить компас",
+  c_nodev: "На этом устройстве нет компаса.", c_ok: "Держите телефон ровно, подальше от металла и магнитов.",
+  c_denied: "Доступ к компасу не разрешён.", c_err: "Компас не работает.",
+  settings: "Настройки", method_l: "Метод расчёта",
+  asr_note: "Время Аср по ханафитскому мазхабу (тень в два раза длиннее).",
+  adj_note: "Если есть разница с официальным календарём, введите поправку в минутах (от -15 до +15):",
+  color_l: "Цвет приложения:", swatch: "Цвет: {n}",
+  prayer_note: "Время рассчитывается на телефоне по положению солнца для центра региона. В других городах и районах возможна разница в несколько минут. В важных случаях сверяйтесь с мечетью или официальным календарём.",
+  now_title: "Что сеять сейчас",
+  now_line: "{date}, регион {c}", now_ok: ":",
+  now_none: ": сейчас основных сроков сева нет. Выберите культуру ниже, чтобы увидеть ближайший срок.",
+  choose_crop: "Выберите культуру", crop_aria: "Культура",
+  st_now: "Сейчас время сева. До конца срока осталось дней: {n} (до {d}).",
+  st_next: "До сева осталось дней: {n} (с {d}).",
+  st_none: "Срок не найден.",
+  range_l: "Период сева ({c}): {r}",
+  seed_title: "Калькулятор семян", area_l: "Площадь", area_ph: "например, 20", unit_l: "Единица",
+  u_sotix: "сотки", u_ga: "гектар", norm_l: "Норма (кг/гектар)",
+  norm_ph: "спросите агронома или нажмите кнопку ниже",
+  calc_btn: "Рассчитать", seed_btn: "Подставить типовую норму",
+  calc_err: "Введите площадь и норму правильно (число больше 0).",
+  calc_total: "Итого: {kg} кг", calc_bags: " (примерно {b} мешков по 50 кг)", calc_area: ". Площадь: {g} га.",
+  seed_none: "Для этой культуры типовая норма не задана. Уточните у агронома и введите сами.",
+  seed_note: "1 гектар = 100 соток. Норма зависит от сорта, почвы и способа посева. Дозы удобрений и препаратов берите только по рекомендации агронома.",
+  crop_note: "Сроки сева приблизительные: в зависимости от погоды, сорта и почвы они сдвигаются на одну-две недели. Точные сроки уточняйте в районном отделе сельского хозяйства или у агронома.",
+  tr_title: "🌐 Переводчик", tr_ph: "Введите текст для перевода... (например: нож)",
+  tr_from: "С какого языка", tr_to: "На какой язык", tr_swap: "Поменять языки", tr_text: "Текст",
+  tr_idle: "Перевод появится здесь", tr_ing: "Перевожу...",
+  tr_off: "Нет интернета. Для перевода подключитесь к сети.",
+  tr_limit: "Бесплатный дневной лимит исчерпан. Попробуйте позже или завтра.",
+  tr_fail: "Не удалось перевести. Проверьте языки и попробуйте ещё раз.",
+  tr_neterr: "Ошибка соединения. Проверьте интернет и попробуйте ещё раз.",
+  tr_go: "Перевести", tr_copy: "Копировать", tr_clear: "Очистить",
+  tr_copied: "Скопировано.", tr_copy_fail: "Не удалось скопировать. Выделите текст вручную.",
+  tr_copy_first: "Сначала сделайте перевод.",
+  tr_note: "Переводчик работает через интернет (сервис MyMemory). Введённый текст отправляется в этот сервис, поэтому не пишите пароли и личные данные. Машинный перевод может быть неточным, важные документы проверяйте у специалиста.",
+  pw_title: "🔐 Проверка надёжности пароля",
+  pw_priv: "Пароль остаётся только здесь, на вашем телефоне — никуда не отправляется.",
+  pw_ph: "Введите пароль здесь...", pw_empty: "Введите пароль",
+  pw_chk: ["Не менее 8 символов","Заглавная буква (A-Z)","Строчная буква (a-z)","Цифра (0-9)","Спецсимвол (!@#$...)","Не простой/распространённый пароль"],
+  pw_weak: "❌ Слабый пароль", pw_mid: "⚠️ Средний пароль", pw_strong: "✅ Надёжный пароль",
+  pw_crack: "Примерное время взлома: {t}",
+  pw_crack_common: "Время взлома: несколько секунд (есть в списке популярных паролей)",
+  pw_units: ["тыс. лет","лет","мес.","дн.","ч","мин","сек"], pw_instant: "мгновенно",
+  pw_tip: "Совет: длинная, но легко запоминаемая фраза — лучший пароль, например «Я2010ОкончилШколу!». Для каждого сайта используйте свой пароль и по возможности включите двухфакторную проверку (2FA).",
+  ab_title: "О foydale.uz",
+  ab_desc: "Бесплатное приложение: время намаза по регионам, кибла, календарь посева для фермеров, переводчик и проверка надёжности пароля.",
+  ab_author: "Автор:", ab_ver: "Версия",
+  sup_title: "Помощь и связь", sup_text: "Есть вопрос, ошибка или предложение — напишите в Telegram.", sup_btn: "Написать в Telegram",
+  sec_title: "Безопасность",
+  sec1: "Разделы намаза, киблы, фермера и пароля работают полностью на телефоне и ничего не отправляют в интернет. Без регистрации и рекламы.",
+  sec2: "Только в разделе «Перевод» введённый вами текст отправляется в сервис MyMemory для перевода. Telegram открывается, только если вы сами нажмёте кнопку «Написать в Telegram».",
+  sec3: "Выбранные регион, язык, настройки и простой счётчик использования (сколько раз открывались разделы) хранятся только на этом телефоне и никуда не отправляются. Введённые тексты и пароли не сохраняются.",
+  sec4: "Геолокация и другие разрешения не запрашиваются. Компас работает, только если вы нажмёте кнопку.",
+  sec5: "Проверка пароля тоже полностью работает на телефоне — введённый пароль никогда не уходит в интернет.",
+  inst_title: "Установка на телефон",
+  inst_text: "В меню браузера выберите «Добавить на главный экран» или «Установить приложение». Разделы намаза, фермера и пароля открываются и без интернета. Для переводчика нужен интернет."
+},
+en: {
+  sub: "Prayer times, farming & translator",
+  region: "Region",
+  nav_aria: "Sections",
+  tab_namoz: "Prayer", tab_dehqon: "Farmer", tab_tarjima: "Translate", tab_parol: "Password", tab_haqida: "About",
+  next_prayer: "Next prayer: {n}", left: "in {t}",
+  p_fajr: "Fajr", p_sunrise: "Sunrise", p_dhuhr: "Dhuhr", p_asr: "Asr", p_maghrib: "Maghrib", p_isha: "Isha",
+  week: "Weekly schedule", th_date: "Date",
+  qibla: "Qibla", qtext: "Qibla for {c}: {d}° ({n})", qaria: "Qibla direction",
+  qhint: "The green arrow points to the Qibla. Top is north.",
+  cN: "N", cS: "S", cW: "W", cE: "E",
+  dirs: ["north","north-east","east","south-east","south","south-west","west","north-west"],
+  compass_btn: "Turn on compass",
+  c_nodev: "This device has no compass.", c_ok: "Hold the phone flat, away from metal and magnets.",
+  c_denied: "Compass permission was denied.", c_err: "The compass did not work.",
+  settings: "Settings", method_l: "Calculation method",
+  asr_note: "Asr time follows the Hanafi school (shadow twice the object's length).",
+  adj_note: "If it differs from the official calendar, enter a correction in minutes (-15 to +15):",
+  color_l: "App colour:", swatch: "{n} colour",
+  prayer_note: "Times are calculated on your phone from the sun's position for the regional centre. Other cities and districts may differ by a few minutes. For important cases, check with your mosque or the official calendar.",
+  now_title: "What to sow now",
+  now_line: "{date}, {c} region", now_ok: ":",
+  now_none: ": no main sowing window right now. Pick a crop below to see the next one.",
+  choose_crop: "Choose a crop", crop_aria: "Crop",
+  st_now: "Sowing time now. {n} days left in the window (until {d}).",
+  st_next: "{n} days until sowing (from {d}).",
+  st_none: "No window found.",
+  range_l: "Sowing window ({c}): {r}",
+  seed_title: "Seed calculator", area_l: "Area", area_ph: "e.g. 20", unit_l: "Unit",
+  u_sotix: "sotix", u_ga: "hectare", norm_l: "Rate (kg/hectare)",
+  norm_ph: "ask an agronomist or press the button below",
+  calc_btn: "Calculate", seed_btn: "Use typical rate",
+  calc_err: "Enter a valid area and rate (a number above 0).",
+  calc_total: "Total: {kg} kg", calc_bags: " (about {b} bags of 50 kg)", calc_area: ". Area: {g} ha.",
+  seed_none: "No typical rate is set for this crop. Ask an agronomist and enter it yourself.",
+  seed_note: "1 hectare = 100 sotix. The rate varies with variety, soil and method. Take fertiliser and pesticide amounts only from an agronomist's advice.",
+  crop_note: "Sowing dates are approximate: depending on the weather, variety and soil they shift by a week or two. Ask your district agriculture office or an agronomist for exact dates.",
+  tr_title: "🌐 Translator", tr_ph: "Type the text to translate... (e.g. knife)",
+  tr_from: "From language", tr_to: "To language", tr_swap: "Swap languages", tr_text: "Text",
+  tr_idle: "The translation will appear here", tr_ing: "Translating...",
+  tr_off: "No internet. Connect to the internet to translate.",
+  tr_limit: "The free daily limit is used up. Try again later or tomorrow.",
+  tr_fail: "Could not translate. Check the languages and try again.",
+  tr_neterr: "Connection error. Check your internet and try again.",
+  tr_go: "Translate", tr_copy: "Copy", tr_clear: "Clear",
+  tr_copied: "Copied.", tr_copy_fail: "Could not copy. Select the text manually.",
+  tr_copy_first: "Translate something first.",
+  tr_note: "The translator works over the internet (MyMemory service). The text you type is sent to that service, so do not enter passwords or personal data. Machine translation may be inaccurate; have important documents checked by a professional.",
+  pw_title: "🔐 Password strength check",
+  pw_priv: "Your password stays here on your phone — it is never sent anywhere.",
+  pw_ph: "Type a password here...", pw_empty: "Enter a password",
+  pw_chk: ["At least 8 characters","Uppercase letter (A-Z)","Lowercase letter (a-z)","Digit (0-9)","Special character (!@#$...)","Not a common password"],
+  pw_weak: "❌ Weak password", pw_mid: "⚠️ Medium password", pw_strong: "✅ Strong password",
+  pw_crack: "Estimated time to crack: {t}",
+  pw_crack_common: "Time to crack: a few seconds (it is on the list of common passwords)",
+  pw_units: ["thousand years","years","months","days","hours","minutes","seconds"], pw_instant: "instantly",
+  pw_tip: "Tip: a long, memorable sentence makes the strongest password, for example “IFinishedSchoolIn2010!”. Use a different password for every site and turn on two-factor authentication (2FA) where you can.",
+  ab_title: "About foydale.uz",
+  ab_desc: "A free app: prayer times by region, Qibla, a sowing calendar for farmers, a translator and a password strength check.",
+  ab_author: "Author:", ab_ver: "Version",
+  sup_title: "Help and contact", sup_text: "For questions, bugs or suggestions, write on Telegram.", sup_btn: "Write on Telegram",
+  sec_title: "Security",
+  sec1: "The prayer, Qibla, farmer and password sections work entirely on your phone and send nothing to the internet. No sign-up and no ads.",
+  sec2: "Only in the “Translate” section is the text you type sent to the MyMemory service to be translated. Telegram opens only if you press the “Write on Telegram” button yourself.",
+  sec3: "Your chosen region, language, settings and a simple usage count (how many times each section was opened) are stored only on this phone and are not sent anywhere. The text and passwords you type are not saved.",
+  sec4: "No location or other permissions are requested. The compass works only when you press the button.",
+  sec5: "The password checker also works entirely on your phone — the password you type is never sent to the internet.",
+  inst_title: "Install on your phone",
+  inst_text: "Choose “Add to Home screen” or “Install app” from the browser menu. The prayer, farmer and password sections also open without internet. The translator needs internet."
+}
+};
+
+var MN = {
+  uz: ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'],
+  ru: ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'],
+  en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+};
+
+var lang = (function(){ var s = store('lang'); return (s === 'ru' || s === 'en' || s === 'uz') ? s : 'uz'; })();
+function t(k, v){
+  var s = (T[lang] && T[lang][k] !== undefined) ? T[lang][k] : T.uz[k];
+  if (s === undefined) return k;
+  if (v && typeof s === 'string') s = s.replace(/\{(\w+)\}/g, function(m, n){ return v[n] !== undefined ? v[n] : m; });
+  return s;
+}
+function dm(d, mi){ return lang === 'uz' ? (d + '-' + MN.uz[mi]) : (d + ' ' + MN[lang][mi]); }
+function fmtDate(ms){ var dt = new Date(ms); return dm(dt.getUTCDate(), dt.getUTCMonth()); }
+
 var CITIES = [
-  { n: 'Toshkent',        c: 'Toshkent',   lat: 41.311, lng: 69.240, off: 3 },
-  { n: 'Samarqand',       c: 'Samarqand',  lat: 39.654, lng: 66.976, off: 0 },
-  { n: 'Buxoro',          c: 'Buxoro',     lat: 39.768, lng: 64.421, off: -4 },
-  { n: 'Xorazm',          c: 'Urganch',    lat: 41.550, lng: 60.633, off: 8 },
-  { n: 'Qoraqalpog\'iston', c: 'Nukus',    lat: 42.460, lng: 59.603, off: 10 },
-  { n: 'Namangan',        c: 'Namangan',   lat: 41.000, lng: 71.673, off: 4 },
-  { n: 'Andijon',         c: 'Andijon',    lat: 40.783, lng: 72.350, off: 3 },
-  { n: 'Farg\'ona',       c: 'Farg\'ona',  lat: 40.384, lng: 71.783, off: 3 },
-  { n: 'Qashqadaryo',     c: 'Qarshi',     lat: 38.861, lng: 65.789, off: -9 },
-  { n: 'Surxondaryo',     c: 'Termiz',     lat: 37.224, lng: 67.278, off: -14 },
-  { n: 'Jizzax',          c: 'Jizzax',     lat: 40.115, lng: 67.842, off: 1 },
-  { n: 'Sirdaryo',        c: 'Guliston',   lat: 40.489, lng: 68.784, off: 2 },
-  { n: 'Navoiy',          c: 'Navoiy',     lat: 40.084, lng: 65.379, off: -2 }
+  { n: ['Toshkent','Ташкент','Tashkent'],           c: ['Toshkent','Ташкент','Tashkent'],   lat: 41.311, lng: 69.240, off: 3 },
+  { n: ['Samarqand','Самарканд','Samarkand'],       c: ['Samarqand','Самарканд','Samarkand'], lat: 39.654, lng: 66.976, off: 0 },
+  { n: ['Buxoro','Бухара','Bukhara'],               c: ['Buxoro','Бухара','Bukhara'],       lat: 39.768, lng: 64.421, off: -4 },
+  { n: ['Xorazm','Хорезм','Khorezm'],               c: ['Urganch','Ургенч','Urgench'],      lat: 41.550, lng: 60.633, off: 8 },
+  { n: ['Qoraqalpog\'iston','Каракалпакстан','Karakalpakstan'], c: ['Nukus','Нукус','Nukus'], lat: 42.460, lng: 59.603, off: 10 },
+  { n: ['Namangan','Наманган','Namangan'],          c: ['Namangan','Наманган','Namangan'],  lat: 41.000, lng: 71.673, off: 4 },
+  { n: ['Andijon','Андижан','Andijan'],             c: ['Andijon','Андижан','Andijan'],     lat: 40.783, lng: 72.350, off: 3 },
+  { n: ['Farg\'ona','Фергана','Fergana'],           c: ['Farg\'ona','Фергана','Fergana'],   lat: 40.384, lng: 71.783, off: 3 },
+  { n: ['Qashqadaryo','Кашкадарья','Kashkadarya'],  c: ['Qarshi','Карши','Karshi'],         lat: 38.861, lng: 65.789, off: -9 },
+  { n: ['Surxondaryo','Сурхандарья','Surkhandarya'],c: ['Termiz','Термез','Termez'],        lat: 37.224, lng: 67.278, off: -14 },
+  { n: ['Jizzax','Джизак','Jizzakh'],               c: ['Jizzax','Джизак','Jizzakh'],       lat: 40.115, lng: 67.842, off: 1 },
+  { n: ['Sirdaryo','Сырдарья','Syrdarya'],          c: ['Guliston','Гулистан','Gulistan'],  lat: 40.489, lng: 68.784, off: 2 },
+  { n: ['Navoiy','Навои','Navoi'],                  c: ['Navoiy','Навои','Navoi'],          lat: 40.084, lng: 65.379, off: -2 }
 ];
 
 var CROPS = [
-  { n: 'Kuzgi bug\'doy', w: [[10,1,11,10]], h: 'Yig\'im: iyun-iyul.',
-    tip: 'Qishdan oldin maysalar yaxshi tuplanib olishi uchun ekish muddatini o\'tkazib yubormang.', seed: 200 },
-  { n: 'Paxta (chigit)', w: [[4,5,5,5]], h: 'Terim: sentabr-noyabr.',
-    tip: 'Qirov xavfi o\'tib, tuproq yetarlicha isigach ekiladi.' },
-  { n: 'Bahorgi kartoshka', w: [[2,25,3,31]], h: 'Yig\'im: iyun-iyul (taxminan 90-110 kun).',
-    tip: 'Sog\'lom, ko\'karib turgan urug\' tuganak tanlang. Tuproq sovuq va nam bo\'lsa ekmang.', seed: 3000 },
-  { n: 'Kech (ikkinchi) kartoshka', w: [[7,15,8,10]], h: 'Yig\'im: oktabr-noyabr.',
-    tip: 'Issiq kunlarda urug\'ni salqin joyda saqlab, ekishdan keyin sug\'orishni kechiktirmang.', seed: 3000 },
-  { n: 'Pomidor (ko\'chat)', w: [[4,20,5,20]], h: 'Hosil: iyul-sentabr.',
-    tip: 'Ko\'chat qirov xavfi o\'tgach ochiq yerga o\'tqaziladi.' },
-  { n: 'Bodring', w: [[4,20,5,20],[7,1,7,20]], h: 'Bahorgi ekish: iyun-iyul hosil. Ikkinchi ekish: kuzgacha hosil.',
-    tip: 'Muntazam va bir tekis sug\'orishni yaxshi ko\'radi.' },
-  { n: 'Sabzi', w: [[3,10,4,15],[6,25,7,20]], h: 'Bahorgi ekish: iyul-avgust. Yozgi ekish: oktabr-noyabr.',
-    tip: 'Urug\' sekin unadi, shuning uchun yuza qatlamni ekishdan keyin nam saqlang.' },
-  { n: 'Piyoz (sevok)', w: [[3,20,4,20]], h: 'Yig\'im: iyun-iyul.',
-    tip: 'Bo\'yi 10-15 sm dan boshlab begona o\'tlardan toza tuting.' },
-  { n: 'Sarimsoq (kuzgi)', w: [[10,10,11,15]], h: 'Yig\'im: iyun-iyul.',
-    tip: 'Katta tishlarni tanlab ekish yirik bosh beradi.' },
-  { n: 'Makkajo\'xori (don)', w: [[4,15,5,15],[6,15,7,10]], h: 'Bahorgi: avgust-sentabr. Ikkinchi ekin: oktabr.',
-    tip: 'Bug\'doydan keyin ikkinchi ekin sifatida ham ekiladi.', seed: 25 },
-  { n: 'Qovun va tarvuz', w: [[4,10,5,10]], h: 'Yig\'im: iyul-avgust.',
-    tip: 'Tuproq yaxshi isib, qirov xavfi o\'tgach ekiladi. Pishish davrida suvni kamaytiring.' }
+  { n: ['Kuzgi bug\'doy','Озимая пшеница','Winter wheat'], w: [[10,1,11,10]], seed: 200,
+    h: ['Yig\'im: iyun-iyul.','Уборка: июнь–июль.','Harvest: June–July.'],
+    tip: ['Qishdan oldin maysalar yaxshi tuplanib olishi uchun ekish muddatini o\'tkazib yubormang.','Не пропускайте срок сева, чтобы до зимы растения успели хорошо раскуститься.','Do not miss the sowing window, so the seedlings can tiller well before winter.'] },
+  { n: ['Paxta (chigit)','Хлопок (семена)','Cotton (seed)'], w: [[4,5,5,5]],
+    h: ['Terim: sentabr-noyabr.','Сбор: сентябрь–ноябрь.','Picking: September–November.'],
+    tip: ['Qirov xavfi o\'tib, tuproq yetarlicha isigach ekiladi.','Сеют, когда минует угроза заморозков и почва достаточно прогреется.','Sown once the frost risk has passed and the soil is warm enough.'] },
+  { n: ['Bahorgi kartoshka','Весенний картофель','Spring potato'], w: [[2,25,3,31]], seed: 3000,
+    h: ['Yig\'im: iyun-iyul (taxminan 90-110 kun).','Уборка: июнь–июль (примерно 90–110 дней).','Harvest: June–July (about 90–110 days).'],
+    tip: ['Sog\'lom, ko\'karib turgan urug\' tuganak tanlang. Tuproq sovuq va nam bo\'lsa ekmang.','Выбирайте здоровые проросшие клубни. Не сажайте в холодную сырую почву.','Choose healthy, sprouted seed tubers. Do not plant in cold, wet soil.'] },
+  { n: ['Kech (ikkinchi) kartoshka','Поздний (повторный) картофель','Late (second) potato'], w: [[7,15,8,10]], seed: 3000,
+    h: ['Yig\'im: oktabr-noyabr.','Уборка: октябрь–ноябрь.','Harvest: October–November.'],
+    tip: ['Issiq kunlarda urug\'ni salqin joyda saqlab, ekishdan keyin sug\'orishni kechiktirmang.','В жару храните семенной картофель в прохладе, а после посадки не откладывайте полив.','In hot weather keep seed tubers cool, and water promptly after planting.'] },
+  { n: ['Pomidor (ko\'chat)','Помидоры (рассада)','Tomato (seedlings)'], w: [[4,20,5,20]],
+    h: ['Hosil: iyul-sentabr.','Урожай: июль–сентябрь.','Harvest: July–September.'],
+    tip: ['Ko\'chat qirov xavfi o\'tgach ochiq yerga o\'tqaziladi.','Рассаду высаживают в открытый грунт после окончания заморозков.','Seedlings go into open ground after the frost risk has passed.'] },
+  { n: ['Bodring','Огурцы','Cucumber'], w: [[4,20,5,20],[7,1,7,20]],
+    h: ['Bahorgi ekish: iyun-iyul hosil. Ikkinchi ekish: kuzgacha hosil.','Весенний сев: урожай июнь–июль. Повторный сев: урожай до осени.','Spring sowing: harvest in June–July. Second sowing: harvest until autumn.'],
+    tip: ['Muntazam va bir tekis sug\'orishni yaxshi ko\'radi.','Любит регулярный и равномерный полив.','Likes regular, even watering.'] },
+  { n: ['Sabzi','Морковь','Carrot'], w: [[3,10,4,15],[6,25,7,20]],
+    h: ['Bahorgi ekish: iyul-avgust. Yozgi ekish: oktabr-noyabr.','Весенний сев: уборка июль–август. Летний сев: октябрь–ноябрь.','Spring sowing: harvest July–August. Summer sowing: October–November.'],
+    tip: ['Urug\' sekin unadi, shuning uchun yuza qatlamni ekishdan keyin nam saqlang.','Семена всходят медленно, поэтому после сева держите верхний слой влажным.','Seeds sprout slowly, so keep the top layer moist after sowing.'] },
+  { n: ['Piyoz (sevok)','Лук (севок)','Onion (sets)'], w: [[3,20,4,20]],
+    h: ['Yig\'im: iyun-iyul.','Уборка: июнь–июль.','Harvest: June–July.'],
+    tip: ['Bo\'yi 10-15 sm dan boshlab begona o\'tlardan toza tuting.','Начиная с высоты 10–15 см, держите грядку чистой от сорняков.','From 10–15 cm height, keep the bed free of weeds.'] },
+  { n: ['Sarimsoq (kuzgi)','Чеснок (озимый)','Garlic (autumn-planted)'], w: [[10,10,11,15]],
+    h: ['Yig\'im: iyun-iyul.','Уборка: июнь–июль.','Harvest: June–July.'],
+    tip: ['Katta tishlarni tanlab ekish yirik bosh beradi.','Крупные зубчики дают крупные головки.','Planting large cloves gives large bulbs.'] },
+  { n: ['Makkajo\'xori (don)','Кукуруза (зерно)','Maize (grain)'], w: [[4,15,5,15],[6,15,7,10]], seed: 25,
+    h: ['Bahorgi: avgust-sentabr. Ikkinchi ekin: oktabr.','Весенний: август–сентябрь. Повторный посев: октябрь.','Spring crop: August–September. Second crop: October.'],
+    tip: ['Bug\'doydan keyin ikkinchi ekin sifatida ham ekiladi.','Её сеют и как повторную культуру после пшеницы.','Also sown as a second crop after wheat.'] },
+  { n: ['Qovun va tarvuz','Дыня и арбуз','Melon and watermelon'], w: [[4,10,5,10]],
+    h: ['Yig\'im: iyul-avgust.','Уборка: июль–август.','Harvest: July–August.'],
+    tip: ['Tuproq yaxshi isib, qirov xavfi o\'tgach ekiladi. Pishish davrida suvni kamaytiring.','Сеют, когда почва хорошо прогрелась и заморозков нет. Во время созревания уменьшайте полив.','Sown when the soil is warm and frost has passed. Reduce watering during ripening.'] }
 ];
 
 var COMMON_PWDS = ['password','123456','12345678','qwerty','111111','123123','admin','parol','parol123',
   'qwerty123','1234567890','password1','12345','iloveyou','abc123','letmein','welcome','monkey','dragon',
   'sunshine','123456789','000000','1234','uzbekistan','tashkent'];
 
+// Tarjimon tillari: [kod, uz, ru, en]
+var LANGS = [
+  ['uz','O\'zbekcha','Узбекский','Uzbek'], ['en','Inglizcha','Английский','English'], ['ru','Ruscha','Русский','Russian'],
+  ['tr','Turkcha','Турецкий','Turkish'], ['ar','Arabcha','Арабский','Arabic'], ['de','Nemischa','Немецкий','German'],
+  ['fr','Fransuzcha','Французский','French'], ['es','Ispancha','Испанский','Spanish'], ['it','Italyancha','Итальянский','Italian'],
+  ['zh-CN','Xitoycha','Китайский','Chinese'], ['ja','Yaponcha','Японский','Japanese'], ['ko','Koreyscha','Корейский','Korean'],
+  ['hi','Hindcha','Хинди','Hindi'], ['fa','Forscha','Персидский','Persian'], ['kk','Qozoqcha','Казахский','Kazakh'],
+  ['ky','Qirg\'izcha','Киргизский','Kyrgyz'], ['tg','Tojikcha','Таджикский','Tajik'], ['az','Ozarbayjoncha','Азербайджанский','Azerbaijani'],
+  ['uk','Ukrainacha','Украинский','Ukrainian'], ['pl','Polyakcha','Польский','Polish']
+];
+
 var $ = function(id){ return document.getElementById(id); };
+function qsa(sel){ return document.querySelectorAll(sel); }
 function E(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 function store(k, v){
   try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {}
@@ -355,10 +739,10 @@ function fmt(min){ min = ((Math.round(min) % 1440) + 1440) % 1440; return pad(Ma
 function clampInt(v, lo, hi, def){ v = parseInt(v, 10); if (!isFinite(v)) return def; return Math.max(lo, Math.min(hi, v)); }
 
 var THEMES = [
-  { n: 'Yashil',      l: ['#1f7a46', '#e3f3e8'], d: ['#4cc07a', '#1d3326'] },
-  { n: 'Ko\'k',       l: ['#1d5fa8', '#e2edf9'], d: ['#62a8ef', '#1a2d44'] },
-  { n: 'To\'q sariq', l: ['#b85a0a', '#fbe9d8'], d: ['#f0a050', '#3a2815'] },
-  { n: 'Binafsha',    l: ['#6b3fa0', '#eee6f7'], d: ['#b592e8', '#2a2040'] }
+  { n: ['Yashil','Зелёный','Green'],          l: ['#1f7a46', '#e3f3e8'], d: ['#4cc07a', '#1d3326'] },
+  { n: ['Ko\'k','Синий','Blue'],              l: ['#1d5fa8', '#e2edf9'], d: ['#62a8ef', '#1a2d44'] },
+  { n: ['To\'q sariq','Оранжевый','Orange'],  l: ['#b85a0a', '#fbe9d8'], d: ['#f0a050', '#3a2815'] },
+  { n: ['Binafsha','Фиолетовый','Purple'],    l: ['#6b3fa0', '#eee6f7'], d: ['#b592e8', '#2a2040'] }
 ];
 var state = {
   theme: clampInt(store('theme'), 0, THEMES.length - 1, 0),
@@ -371,8 +755,8 @@ var state = {
   for (var k in state.adj){ state.adj[k] = clampInt(store('adj_' + k), -15, 15, 0); }
 })();
 
-var PR = [['fajr','Bomdod'],['sunrise','Quyosh'],['dhuhr','Peshin'],['asr','Asr'],['maghrib','Shom'],['isha','Xufton']];
-var NAMES = { fajr:'Bomdod', dhuhr:'Peshin', asr:'Asr', maghrib:'Shom', isha:'Xufton' };
+var PR = [['fajr','p_fajr'],['sunrise','p_sunrise'],['dhuhr','p_dhuhr'],['asr','p_asr'],['maghrib','p_maghrib'],['isha','p_isha']];
+var ADJ_KEYS = ['fajr','dhuhr','asr','maghrib','isha'];
 
 function nowTZ(){
   var n = new Date(Date.now() + TZ * 3600000);
@@ -381,69 +765,116 @@ function nowTZ(){
 }
 function dayTimes(y, m, d){
   var c = CITIES[state.region];
-  var t = prayerTimes(c.lat, c.lng, y, m, d, METHODS[state.method]);
+  var t0 = prayerTimes(c.lat, c.lng, y, m, d, METHODS[state.method]);
   var out = {};
   for (var i = 0; i < PR.length; i++){
     var k = PR[i][0];
-    out[k] = Math.round(t[k] * 60 + (state.adj[k] || 0));
+    out[k] = Math.round(t0[k] * 60 + (state.adj[k] || 0));
   }
   return out;
+}
+
+/* ================= Foydalanish hisobi (faqat shu qurilmada) ================= */
+var STK = 'stats_v1';
+function loadStats(){
+  var o = null;
+  try { o = JSON.parse(store(STK) || 'null'); } catch (e) { o = null; }
+  if (!o || typeof o !== 'object' || Array.isArray(o)) o = {};
+  o.first = +o.first || Date.now();
+  o.opens = +o.opens || 0; o.tr = +o.tr || 0; o.calc = +o.calc || 0; o.pw = +o.pw || 0;
+  ['days','tabs','langs','regions','pairs'].forEach(function(k){
+    if (!o[k] || typeof o[k] !== 'object' || Array.isArray(o[k])) o[k] = {};
+  });
+  return o;
+}
+var S = loadStats();
+function bump(map, key){ map[key] = (+map[key] || 0) + 1; }
+function saveStats(){
+  var ks = Object.keys(S.days).sort();
+  while (ks.length > 60){ delete S.days[ks.shift()]; }
+  store(STK, JSON.stringify(S));
+}
+function dayKey(y, m, d){ return y + '-' + pad(m) + '-' + pad(d); }
+function today(){ var n = nowTZ(); return dayKey(n.y, n.m, n.d); }
+
+/* ================= Matn kalitlari (til almashganda yangilanadi) ================= */
+var keyed = {};
+function setKeyed(id, key, cls){
+  keyed[id] = key;
+  var el = $(id);
+  el.textContent = key ? t(key) : '';
+  if (cls !== undefined) el.className = cls;
+}
+function refreshKeyed(){
+  for (var id in keyed){ if (keyed[id]) $(id).textContent = t(keyed[id]); }
+}
+
+function applyStatic(){
+  document.documentElement.lang = lang;
+  var i, els = qsa('[data-i]');
+  for (i = 0; i < els.length; i++) els[i].textContent = t(els[i].getAttribute('data-i'));
+  els = qsa('[data-ph]');
+  for (i = 0; i < els.length; i++) els[i].setAttribute('placeholder', t(els[i].getAttribute('data-ph')));
+  els = qsa('[data-al]');
+  for (i = 0; i < els.length; i++) els[i].setAttribute('aria-label', t(els[i].getAttribute('data-al')));
 }
 
 var shownKey = '';
 function renderTimes(){
   var n = nowTZ();
-  var key = [n.y, n.m, n.d, state.region, state.method, JSON.stringify(state.adj)].join('|');
+  var key = [n.y, n.m, n.d, state.region, state.method, lang, JSON.stringify(state.adj)].join('|');
   if (key === shownKey) return;
   shownKey = key;
-  var t = dayTimes(n.y, n.m, n.d);
+  var tt = dayTimes(n.y, n.m, n.d);
   var box = $('times');
   box.textContent = '';
   for (var i = 0; i < PR.length; i++){
     var row = E('div', 'row');
     row.setAttribute('data-key', PR[i][0]);
-    row.appendChild(E('span', null, PR[i][1]));
-    row.appendChild(E('span', 't', fmt(t[PR[i][0]])));
+    row.appendChild(E('span', null, t(PR[i][1])));
+    row.appendChild(E('span', 't', fmt(tt[PR[i][0]])));
     box.appendChild(row);
   }
-  var c = CITIES[state.region];
-  $('todayLine').textContent = n.d + '-' + MONTHS[n.m - 1] + ', ' + n.y + '  |  ' + c.n + (c.n !== c.c ? ' (' + c.c + ')' : '');
+  var c = CITIES[state.region], li = L[lang];
+  $('todayLine').textContent = dm(n.d, n.m - 1) + ', ' + n.y + '  |  ' + c.n[li] + (c.n[li] !== c.c[li] ? ' (' + c.c[li] + ')' : '');
   renderWeek(n);
 }
 function renderWeek(n){
   var tb = $('week');
   tb.textContent = '';
   var hr = E('tr');
-  ['Sana','Bomdod','Quyosh','Peshin','Asr','Shom','Xufton'].forEach(function(h){ hr.appendChild(E('th', null, h)); });
+  [t('th_date'), t('p_fajr'), t('p_sunrise'), t('p_dhuhr'), t('p_asr'), t('p_maghrib'), t('p_isha')].forEach(function(h){ hr.appendChild(E('th', null, h)); });
   tb.appendChild(hr);
   for (var i = 0; i < 7; i++){
     var dt = new Date(Date.UTC(n.y, n.m - 1, n.d + i));
-    var t = dayTimes(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+    var tt = dayTimes(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
     var tr = E('tr');
-    tr.appendChild(E('td', null, dt.getUTCDate() + '-' + MONTHS[dt.getUTCMonth()].slice(0, 3)));
-    PR.forEach(function(p){ tr.appendChild(E('td', null, fmt(t[p[0]]))); });
+    tr.appendChild(E('td', null, dt.getUTCDate() + ' ' + MN[lang][dt.getUTCMonth()].slice(0, 3)));
+    PR.forEach(function(p){ tr.appendChild(E('td', null, fmt(tt[p[0]]))); });
     tb.appendChild(tr);
   }
 }
 function tick(){
   renderTimes();
   var n = nowTZ();
-  var t = dayTimes(n.y, n.m, n.d);
+  var tt = dayTimes(n.y, n.m, n.d);
   var order = ['fajr','dhuhr','asr','maghrib','isha'];
   var nxt = null, target = 0;
   for (var i = 0; i < order.length; i++){
-    if (t[order[i]] > n.min){ nxt = order[i]; target = t[order[i]]; break; }
+    if (tt[order[i]] > n.min){ nxt = order[i]; target = tt[order[i]]; break; }
   }
   if (!nxt){
     var tm = new Date(Date.UTC(n.y, n.m - 1, n.d + 1));
-    var tt = dayTimes(tm.getUTCFullYear(), tm.getUTCMonth() + 1, tm.getUTCDate());
-    nxt = 'fajr'; target = tt.fajr + 1440;
+    var t2 = dayTimes(tm.getUTCFullYear(), tm.getUTCMonth() + 1, tm.getUTCDate());
+    nxt = 'fajr'; target = t2.fajr + 1440;
   }
   var secs = Math.max(0, Math.round((target - n.min) * 60));
   var hh = Math.floor(secs / 3600), mm = Math.floor((secs % 3600) / 60), ss = secs % 60;
-  $('nxName').textContent = 'Keyingi namoz: ' + NAMES[nxt];
+  var nm = '';
+  for (var q = 0; q < PR.length; q++){ if (PR[q][0] === nxt) nm = t(PR[q][1]); }
+  $('nxName').textContent = t('next_prayer', { n: nm });
   $('nxTime').textContent = fmt(target);
-  $('nxLeft').textContent = pad(hh) + ':' + pad(mm) + ':' + pad(ss) + ' dan keyin';
+  $('nxLeft').textContent = t('left', { t: pad(hh) + ':' + pad(mm) + ':' + pad(ss) });
   var rows = $('times').children;
   for (var j = 0; j < rows.length; j++){
     rows[j].className = 'row' + (rows[j].getAttribute('data-key') === nxt && target < 1440 ? ' on' : '');
@@ -451,14 +882,11 @@ function tick(){
 }
 
 var heading = 0, qb = 0;
-function dirName(b){
-  var names = ['shimol','shimoli-sharq','sharq','janubi-sharq','janub','janubi-g\'arb','g\'arb','shimoli-g\'arb'];
-  return names[Math.round(b / 45) % 8];
-}
+function dirName(b){ return t('dirs')[Math.round(b / 45) % 8]; }
 function renderQibla(){
   var c = CITIES[state.region];
   qb = qiblaBearing(c.lat, c.lng);
-  $('qText').textContent = c.n + ' uchun qibla: ' + Math.round(qb) + '° (' + dirName(qb) + ')';
+  $('qText').textContent = t('qtext', { c: c.n[L[lang]], d: Math.round(qb), n: dirName(qb) });
   updateArrow();
 }
 function updateArrow(){
@@ -472,39 +900,38 @@ function onOrient(e){
   if (hd !== null){ heading = hd; updateArrow(); }
 }
 function startCompass(){
-  var msg = $('compassMsg');
   var D = window.DeviceOrientationEvent;
-  if (!D){ msg.textContent = 'Bu qurilmada kompas yo\'q.'; return; }
+  if (!D){ setKeyed('compassMsg', 'c_nodev'); return; }
   function go(){
     window.addEventListener('deviceorientationabsolute', onOrient, true);
     window.addEventListener('deviceorientation', onOrient, true);
     compassOn = true;
-    msg.textContent = 'Telefonni tekis ushlang, metall va magnitdan uzoqroq turing.';
+    setKeyed('compassMsg', 'c_ok');
   }
   if (typeof D.requestPermission === 'function'){
     D.requestPermission().then(function(r){
-      if (r === 'granted') go(); else msg.textContent = 'Kompasga ruxsat berilmadi.';
-    }).catch(function(){ msg.textContent = 'Kompas ishlamadi.'; });
+      if (r === 'granted') go(); else setKeyed('compassMsg', 'c_denied');
+    }).catch(function(){ setKeyed('compassMsg', 'c_err'); });
   } else go();
 }
 
 function statusText(st){
-  if (!st) return 'Muddat topilmadi.';
-  if (st.state === 'now') return 'Hozir ekish vaqti. Muddat tugashiga ' + st.left + ' kun qoldi (' + fmtDate(st.end) + ' gacha).';
-  return 'Ekishga ' + st.days + ' kun qoldi (' + fmtDate(st.start) + ' dan).';
+  if (!st) return t('st_none');
+  if (st.state === 'now') return t('st_now', { n: st.left, d: fmtDate(st.end) });
+  return t('st_next', { n: st.days, d: fmtDate(st.start) });
 }
 function renderNowCrops(){
-  var n = nowTZ(), off = CITIES[state.region].off;
+  var n = nowTZ(), off = CITIES[state.region].off, li = L[lang];
   var box = $('nowCrops'); box.textContent = '';
   var cnt = 0;
   CROPS.forEach(function(c){
     var st = cropStatus(c.w, off, n.y, n.m, n.d);
-    if (st && st.state === 'now'){ box.appendChild(E('span', 'chip', c.n)); cnt++; }
+    if (st && st.state === 'now'){ box.appendChild(E('span', 'chip', c.n[li])); cnt++; }
   });
-  $('nowLine').textContent = n.d + '-' + MONTHS[n.m - 1] + ', ' + CITIES[state.region].n + ' viloyati' +
-    (cnt ? ':' : ': hozir asosiy ekish muddati yo\'q. Pastdan ekin tanlab, keyingi muddatni ko\'ring.');
+  $('nowLine').textContent = t('now_line', { date: dm(n.d, n.m - 1), c: CITIES[state.region].n[li] }) + (cnt ? t('now_ok') : t('now_none'));
 }
 function renderCrop(){
+  var li = L[lang];
   var c = CROPS[state.crop], n = nowTZ(), off = CITIES[state.region].off;
   var box = $('cropInfo'); box.textContent = '';
   var st = cropStatus(c.w, off, n.y, n.m, n.d);
@@ -512,9 +939,9 @@ function renderCrop(){
   var wl = c.w.map(function(w){
     return fmtDate(Date.UTC(n.y, w[0] - 1, w[1]) + off * 86400000) + ' - ' + fmtDate(Date.UTC(n.y, w[2] - 1, w[3]) + off * 86400000);
   }).join(';  ');
-  box.appendChild(E('p', null, 'Ekish oralig\'i (' + CITIES[state.region].n + '): ' + wl));
-  box.appendChild(E('p', null, c.h));
-  box.appendChild(E('p', 'mut', c.tip));
+  box.appendChild(E('p', null, t('range_l', { c: CITIES[state.region].n[li], r: wl })));
+  box.appendChild(E('p', null, c.h[li]));
+  box.appendChild(E('p', 'mut', c.tip[li]));
 }
 function calc(){
   var out = $('calcOut');
@@ -522,39 +949,182 @@ function calc(){
   var unit = $('unit').value;
   out.hidden = false;
   if (!isFinite(area) || !isFinite(norm) || area <= 0 || norm <= 0 || area > 1e6 || norm > 1e6){
-    out.textContent = 'Maydon va me\'yorni to\'g\'ri kiriting (0 dan katta son).';
+    out.textContent = t('calc_err');
     return;
   }
   var ga = unit === 'sotix' ? area / 100 : area;
   var kg = ga * norm;
-  var txt = 'Jami: ' + (Math.round(kg * 10) / 10) + ' kg';
-  if (kg >= 50) txt += ' (taxminan ' + (Math.round(kg / 50 * 10) / 10) + ' ta 50 kg lik qop)';
-  txt += '. Maydon: ' + (Math.round(ga * 1000) / 1000) + ' ga.';
+  var txt = t('calc_total', { kg: Math.round(kg * 10) / 10 });
+  if (kg >= 50) txt += t('calc_bags', { b: Math.round(kg / 50 * 10) / 10 });
+  txt += t('calc_area', { g: Math.round(ga * 1000) / 1000 });
   out.textContent = txt;
+  S.calc++; saveStats();
 }
 function useSeed(){
   var c = CROPS[state.crop];
   var out = $('calcOut');
   if (c.seed){ $('norm').value = c.seed; out.hidden = true; }
-  else { out.hidden = false; out.textContent = 'Bu ekin uchun odatiy me\'yor qo\'yilmagan. Agronomdan so\'rab, o\'zingiz kiriting.'; }
+  else { out.hidden = false; out.textContent = t('seed_none'); }
 }
 
+/* ===================== TARJIMON ===================== */
+var trTimer = null, trSeq = 0, trLast = '';
+function trIsResult(){ var c = $('trOut').className; return !!trLast && c.indexOf('err') < 0 && c.indexOf('idle') < 0; }
+function trSetOut(text, cls){
+  keyed.trOut = null;
+  var o = $('trOut');
+  o.textContent = text;
+  o.className = 'trout' + (cls ? ' ' + cls : '');
+}
+function trSetKey(key, cls){ setKeyed('trOut', key, 'trout' + (cls ? ' ' + cls : '')); }
+function decodeEntities(s){
+  var ta = document.createElement('textarea');
+  ta.innerHTML = s;
+  return ta.value;
+}
+function doTranslate(){
+  var text = $('trIn').value.trim();
+  var from = $('trFrom').value, to = $('trTo').value;
+  var seq = ++trSeq;
+  setKeyed('trMsg', null);
+  if (!text){ trLast = ''; trSetKey('tr_idle', 'idle'); return; }
+  if (from === to){ trSetOut(text); trLast = text; return; }
+  if (navigator.onLine === false){ trSetKey('tr_off', 'err'); return; }
+  trSetKey('tr_ing', 'idle');
+  var url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) +
+            '&langpair=' + encodeURIComponent(from + '|' + to);
+  var ctl = ('AbortController' in window) ? new AbortController() : null;
+  var tm = setTimeout(function(){ if (ctl) ctl.abort(); }, 12000);
+  fetch(url, ctl ? { signal: ctl.signal } : undefined).then(function(r){
+    if (!r.ok) throw new Error('http' + r.status);
+    return r.json();
+  }).then(function(j){
+    clearTimeout(tm);
+    if (seq !== trSeq) return;
+    var status = parseInt(j && j.responseStatus, 10);
+    var res = j && j.responseData && j.responseData.translatedText;
+    if (status === 200 && typeof res === 'string' && res){
+      res = decodeEntities(res);
+      trLast = res;
+      trSetOut(res);
+      S.tr++; bump(S.pairs, from + '>' + to); saveStats();
+    } else if (status === 429){
+      trSetKey('tr_limit', 'err');
+    } else {
+      trSetKey('tr_fail', 'err');
+    }
+  }).catch(function(){
+    clearTimeout(tm);
+    if (seq !== trSeq) return;
+    trSetKey('tr_neterr', 'err');
+  });
+}
+function scheduleTranslate(){
+  clearTimeout(trTimer);
+  $('trCnt').textContent = $('trIn').value.length;
+  trTimer = setTimeout(doTranslate, 700);
+}
+function fillLangSelect(sel){
+  var cur = sel.value, i;
+  if (!sel.options.length){
+    for (i = 0; i < LANGS.length; i++){ var o = E('option', null, ''); o.value = LANGS[i][0]; sel.appendChild(o); }
+  }
+  for (i = 0; i < LANGS.length; i++) sel.options[i].textContent = LANGS[i][1 + L[lang]];
+  if (cur) sel.value = cur;
+}
+function setupTranslator(){
+  var f = $('trFrom'), tt = $('trTo');
+  fillLangSelect(f); fillLangSelect(tt);
+  function okLang(v){ return LANGS.some(function(l){ return l[0] === v; }); }
+  var sf = store('trFrom'), st = store('trTo');
+  f.value = okLang(sf) ? sf : 'uz';
+  tt.value = okLang(st) ? st : 'en';
+  trSetKey('tr_idle', 'idle');
+  f.addEventListener('change', function(){ store('trFrom', f.value); doTranslate(); });
+  tt.addEventListener('change', function(){ store('trTo', tt.value); doTranslate(); });
+  $('trSwap').addEventListener('click', function(){
+    var wasResult = trIsResult();
+    var a = f.value; f.value = tt.value; tt.value = a;
+    store('trFrom', f.value); store('trTo', tt.value);
+    if (wasResult){
+      $('trIn').value = trLast.slice(0, 500);
+      $('trCnt').textContent = $('trIn').value.length;
+    }
+    doTranslate();
+  });
+  $('trIn').addEventListener('input', scheduleTranslate);
+  $('trGo').addEventListener('click', function(){ clearTimeout(trTimer); doTranslate(); });
+  $('trClear').addEventListener('click', function(){
+    clearTimeout(trTimer); trSeq++; trLast = '';
+    $('trIn').value = ''; $('trCnt').textContent = '0';
+    setKeyed('trMsg', null);
+    trSetKey('tr_idle', 'idle');
+  });
+  $('trCopy').addEventListener('click', function(){
+    if (!trIsResult()){ setKeyed('trMsg', 'tr_copy_first'); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(trLast).then(function(){
+        setKeyed('trMsg', 'tr_copied');
+      }).catch(function(){ setKeyed('trMsg', 'tr_copy_fail'); });
+    } else {
+      setKeyed('trMsg', 'tr_copy_fail');
+    }
+  });
+}
+
+/* ===================== PAROL TEKSHIRUVCHI ===================== */
 function pwdFormatTime(sec){
-  if (sec < 1) return 'bir zumda';
-  var units = [[31536000000,'ming yil'],[31536000,'yil'],[2592000,'oy'],[86400,'kun'],[3600,'soat'],[60,'daqiqa'],[1,'soniya']];
+  var u = t('pw_units');
+  if (sec < 1) return t('pw_instant');
+  var units = [[31536000000,u[0]],[31536000,u[1]],[2592000,u[2]],[86400,u[3]],[3600,u[4]],[60,u[5]],[1,u[6]]];
   for (var i = 0; i < units.length; i++){
     if (sec >= units[i][0]) return Math.floor(sec / units[i][0]) + ' ' + units[i][1];
   }
-  return 'bir zumda';
+  return t('pw_instant');
 }
+var PW_IDS = ['len','upper','lower','num','sym','common'];
+function pwUpdate(){
+  var v = $('pwdInput').value, chk = t('pw_chk'), meter = $('pwdMeter'), label = $('pwdLabel'), crack = $('pwdCrack');
+  var i, r;
+  if (!v){
+    meter.style.width = '0%'; meter.style.background = '';
+    label.textContent = t('pw_empty'); label.style.color = 'var(--mut)';
+    crack.textContent = '';
+    for (i = 0; i < PW_IDS.length; i++){ r = $('pwd-' + PW_IDS[i]); r.style.color = 'var(--mut)'; r.textContent = '○ ' + chk[i]; }
+    return;
+  }
+  var hasLen = v.length >= 8, hasUpper = /[A-Z]/.test(v), hasLower = /[a-z]/.test(v),
+      hasNum = /[0-9]/.test(v), hasSym = /[^A-Za-z0-9]/.test(v);
+  var isCommon = COMMON_PWDS.indexOf(v.toLowerCase()) > -1;
+  var vals = [hasLen, hasUpper, hasLower, hasNum, hasSym, !isCommon];
+  for (i = 0; i < PW_IDS.length; i++){
+    r = $('pwd-' + PW_IDS[i]);
+    r.style.color = vals[i] ? '#2f9e52' : 'var(--mut)';
+    r.textContent = (vals[i] ? '✓ ' : '○ ') + chk[i];
+  }
+  var score = vals.filter(Boolean).length;
+  if (isCommon) score = Math.min(score, 1);
+  var pct, color, text;
+  if (score <= 2){ pct = 25; color = '#e04b4b'; text = t('pw_weak'); }
+  else if (score <= 4){ pct = 60; color = '#d98c1f'; text = t('pw_mid'); }
+  else { pct = 100; color = '#2f9e52'; text = t('pw_strong'); }
+  meter.style.width = pct + '%'; meter.style.background = color;
+  label.textContent = text; label.style.color = color;
+  var charset = 0;
+  if (hasLower) charset += 26;
+  if (hasUpper) charset += 26;
+  if (hasNum) charset += 10;
+  if (hasSym) charset += 32;
+  if (!charset) charset = 26;
+  var seconds = Math.pow(charset, v.length) / 1e9 / 2;
+  crack.textContent = isCommon ? t('pw_crack_common') : t('pw_crack', { t: pwdFormatTime(seconds) });
+}
+var pwCounted = false;
 function setupPasswordChecker(){
-  var input = $('pwdInput'), eye = $('pwdEye'), meter = $('pwdMeter'), label = $('pwdLabel'),
-      checksBox = $('pwdChecks'), crack = $('pwdCrack');
-  var items = [['len','Kamida 8 ta belgi'],['upper','Katta harf (A-Z)'],['lower','Kichik harf (a-z)'],
-    ['num','Raqam (0-9)'],['sym','Maxsus belgi (!@#$...)'],['common','Oddiy/mashhur parol emas']];
-  items.forEach(function(it){
-    var row = E('div', null, '○ ' + it[1]);
-    row.id = 'pwd-' + it[0];
+  var input = $('pwdInput'), eye = $('pwdEye'), checksBox = $('pwdChecks');
+  PW_IDS.forEach(function(id){
+    var row = E('div', null, '');
+    row.id = 'pwd-' + id;
     checksBox.appendChild(row);
   });
   eye.addEventListener('click', function(){
@@ -562,43 +1132,10 @@ function setupPasswordChecker(){
     eye.textContent = input.type === 'password' ? '👁️' : '🙈';
   });
   input.addEventListener('input', function(){
-    var v = input.value;
-    if (!v){
-      meter.style.width = '0%'; meter.style.background = '';
-      label.textContent = 'Parol kiriting'; label.style.color = 'var(--mut)';
-      crack.textContent = '';
-      items.forEach(function(it){ var r = $('pwd-' + it[0]); r.style.color = 'var(--mut)'; r.textContent = '○ ' + it[1]; });
-      return;
-    }
-    var hasLen = v.length >= 8, hasUpper = /[A-Z]/.test(v), hasLower = /[a-z]/.test(v),
-        hasNum = /[0-9]/.test(v), hasSym = /[^A-Za-z0-9]/.test(v);
-    var isCommon = COMMON_PWDS.indexOf(v.toLowerCase()) > -1;
-    var vals = { len: hasLen, upper: hasUpper, lower: hasLower, num: hasNum, sym: hasSym, common: !isCommon };
-    items.forEach(function(it){
-      var ok = vals[it[0]], r = $('pwd-' + it[0]);
-      r.style.color = ok ? '#2f9e52' : 'var(--mut)';
-      r.textContent = (ok ? '✓ ' : '○ ') + it[1];
-    });
-    var score = [hasLen, hasUpper, hasLower, hasNum, hasSym, !isCommon].filter(Boolean).length;
-    if (isCommon) score = Math.min(score, 1);
-    var pct, color, text;
-    if (score <= 2){ pct = 25; color = '#e04b4b'; text = '❌ Zaif parol'; }
-    else if (score <= 4){ pct = 60; color = '#d98c1f'; text = '⚠️ O\'rtacha parol'; }
-    else { pct = 100; color = '#2f9e52'; text = '✅ Kuchli parol'; }
-    meter.style.width = pct + '%'; meter.style.background = color;
-    label.textContent = text; label.style.color = color;
-    var charset = 0;
-    if (hasLower) charset += 26;
-    if (hasUpper) charset += 26;
-    if (hasNum) charset += 10;
-    if (hasSym) charset += 32;
-    if (!charset) charset = 26;
-    var combos = Math.pow(charset, v.length);
-    var seconds = combos / 1e9 / 2;
-    crack.textContent = isCommon
-      ? 'Buzish vaqti: bir necha soniya (mashhur parollar ro\'yxatida bor)'
-      : ('Taxminiy buzish vaqti: ' + pwdFormatTime(seconds));
+    if (!pwCounted && input.value){ pwCounted = true; S.pw++; saveStats(); }
+    pwUpdate();
   });
+  pwUpdate();
 }
 
 function applyTheme(){
@@ -610,7 +1147,7 @@ function applyTheme(){
   r.setProperty('--onpri', dark ? '#0d1410' : '#ffffff');
   var m = document.querySelector('meta[name="theme-color"]');
   if (m) m.setAttribute('content', p[0]);
-  var sw = document.querySelectorAll('.sw');
+  var sw = qsa('.sw');
   for (var i = 0; i < sw.length; i++) sw[i].setAttribute('aria-pressed', String(i === state.theme));
 }
 
@@ -621,11 +1158,150 @@ function renderAll(){
   renderNowCrops();
   renderCrop();
 }
-function showTab(name){
-  ['namoz','dehqon','xavfsizlik','haqida'].forEach(function(t){ $('tab-' + t).hidden = (t !== name); });
-  var bs = document.querySelectorAll('nav button');
+
+/* Til almashganda hamma yozuvlarni yangilash */
+function relabel(){
+  var li = L[lang], i;
+  applyStatic();
+  var ro = $('region').options;
+  for (i = 0; i < ro.length; i++) ro[i].textContent = CITIES[i].n[li];
+  var co = $('cropSel').options;
+  for (i = 0; i < co.length; i++) co[i].textContent = CROPS[i].n[li];
+  fillLangSelect($('trFrom')); fillLangSelect($('trTo'));
+  var sw = qsa('.sw');
+  for (i = 0; i < sw.length; i++) sw[i].setAttribute('aria-label', t('swatch', { n: THEMES[i].n[li] }));
+  var adjLabels = qsa('#adjBox label');
+  for (i = 0; i < adjLabels.length; i++) adjLabels[i].textContent = t('p_' + ADJ_KEYS[i]);
+  refreshKeyed();
+  pwUpdate();
+  $('calcOut').hidden = true;
+  renderAll();
+  if (adminOpen) renderStats();
+}
+
+/* ===================== YASHIRIN STATISTIKA ===================== */
+var adminOpen = false, lockUntil = +store('lk') || 0, fails = 0;
+function admMsg(txt){ $('admMsg').textContent = txt; }
+function barList(title, map, labelFn, limit){
+  var wrap = E('div', 'stlist');
+  wrap.appendChild(E('h3', null, title));
+  var keys = Object.keys(map).sort(function(a, b){ return map[b] - map[a]; }).slice(0, limit || 8);
+  if (!keys.length){ wrap.appendChild(E('p', 'mut', '—')); return wrap; }
+  var max = map[keys[0]] || 1;
+  keys.forEach(function(k){
+    var row = E('div', 'bar');
+    row.appendChild(E('div', 'bl', labelFn ? labelFn(k) : k));
+    var bt = E('div', 'bt'), bf = E('div', 'bf');
+    bf.style.width = Math.max(4, Math.round(map[k] / max * 100)) + '%';
+    bt.appendChild(bf); row.appendChild(bt);
+    row.appendChild(E('div', 'bv', String(map[k])));
+    wrap.appendChild(row);
+  });
+  return wrap;
+}
+function statBox(num, label){
+  var b = E('div', 'stbox');
+  b.appendChild(E('b', null, String(num)));
+  b.appendChild(E('span', null, label));
+  return b;
+}
+function renderStats(){
+  var body = $('stBody');
+  body.textContent = '';
+  var n = nowTZ();
+  var tdy = S.days[dayKey(n.y, n.m, n.d)] || 0;
+  var last7 = {}, sum7 = 0, i;
+  for (i = 6; i >= 0; i--){
+    var dt = new Date(Date.UTC(n.y, n.m - 1, n.d - i));
+    var k = dayKey(dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate());
+    last7[k] = S.days[k] || 0; sum7 += last7[k];
+  }
+  var g = E('div', 'stgrid');
+  g.appendChild(statBox(S.opens, 'Jami ochilish'));
+  g.appendChild(statBox(tdy, 'Bugun'));
+  g.appendChild(statBox(sum7, 'So\'nggi 7 kun'));
+  g.appendChild(statBox(S.tr, 'Tarjimalar'));
+  g.appendChild(statBox(S.calc, 'Urug\' hisoblash'));
+  g.appendChild(statBox(S.pw, 'Parol tekshiruv'));
+  body.appendChild(g);
+  var fd = new Date(S.first + TZ * 3600000);
+  body.appendChild(E('p', 'mut', 'Birinchi kirish: ' + dayKey(fd.getUTCFullYear(), fd.getUTCMonth() + 1, fd.getUTCDate())));
+  var wrap = E('div', 'stlist');
+  wrap.appendChild(E('h3', null, 'Kunlar bo\'yicha (7 kun)'));
+  var mx = 1; for (var kk in last7){ if (last7[kk] > mx) mx = last7[kk]; }
+  Object.keys(last7).forEach(function(k2){
+    var row = E('div', 'bar');
+    row.appendChild(E('div', 'bl', k2.slice(5)));
+    var bt = E('div', 'bt'), bf = E('div', 'bf');
+    bf.style.width = (last7[k2] ? Math.max(4, Math.round(last7[k2] / mx * 100)) : 0) + '%';
+    bt.appendChild(bf); row.appendChild(bt);
+    row.appendChild(E('div', 'bv', String(last7[k2])));
+    wrap.appendChild(row);
+  });
+  body.appendChild(wrap);
+  var tabNames = { namoz: 'Namoz', dehqon: 'Dehqon', tarjima: 'Tarjima', xavfsizlik: 'Parol', haqida: 'Haqida' };
+  body.appendChild(barList('Bo\'limlar', S.tabs, function(k){ return tabNames[k] || k; }));
+  body.appendChild(barList('Til', S.langs, function(k){ return k === 'uz' ? 'O\'zbekcha' : k === 'ru' ? 'Русский' : k === 'en' ? 'English' : k; }));
+  body.appendChild(barList('Viloyat', S.regions, function(k){ var c = CITIES[+k]; return c ? c.n[0] : k; }));
+  body.appendChild(barList('Tarjima yo\'nalishi', S.pairs, function(k){ return k.replace('>', ' → '); }));
+}
+function lockAdmin(){
+  adminOpen = false;
+  $('adminStats').hidden = true;
+  $('stBody').textContent = '';
+  $('adminLogin').hidden = true;
+  $('admPw').value = ''; admMsg('');
+}
+function unlockAdmin(){
+  adminOpen = true;
+  $('adminLogin').hidden = true;
+  $('admPw').value = ''; admMsg('');
+  renderStats();
+  $('adminStats').hidden = false;
+}
+function tryLogin(){
+  var now = Date.now();
+  if (now < lockUntil){ admMsg('Ko\'p urinish. ' + Math.ceil((lockUntil - now) / 1000) + ' soniya kuting.'); return; }
+  var pw = $('admPw').value;
+  if (pw && sha256(ADMIN_SALT + pw) === ADMIN_HASH){ fails = 0; unlockAdmin(); return; }
+  fails++;
+  $('admPw').value = '';
+  if (fails >= 5){
+    fails = 0; lockUntil = now + 60000; store('lk', String(lockUntil));
+    admMsg('Ko\'p urinish. 60 soniya kuting.');
+  } else {
+    admMsg('Parol noto\'g\'ri.');
+  }
+}
+function setupAdmin(){
+  var taps = [];
+  $('verBox').addEventListener('click', function(){
+    var now = Date.now();
+    taps.push(now);
+    taps = taps.filter(function(x){ return now - x < 3000; });
+    if (taps.length >= 5){
+      taps = [];
+      if (!adminOpen){ $('adminLogin').hidden = false; $('admPw').focus(); }
+    }
+  });
+  $('admGo').addEventListener('click', tryLogin);
+  $('admPw').addEventListener('keydown', function(e){ if (e.key === 'Enter') tryLogin(); });
+  $('stClose').addEventListener('click', lockAdmin);
+  $('stClear').addEventListener('click', function(){
+    var keep = S.first;
+    S = loadStats(); S.opens = 0; S.tr = 0; S.calc = 0; S.pw = 0; S.days = {}; S.tabs = {}; S.langs = {}; S.regions = {}; S.pairs = {};
+    S.first = keep; saveStats(); renderStats();
+  });
+}
+
+var TABS = ['namoz','dehqon','tarjima','xavfsizlik','haqida'];
+function showTab(name, user){
+  TABS.forEach(function(x){ $('tab-' + x).hidden = (x !== name); });
+  var bs = qsa('nav button');
   for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-selected', bs[i].getAttribute('data-tab') === name ? 'true' : 'false');
   store('tab', name);
+  if (user){ bump(S.tabs, name); saveStats(); }
+  if (name !== 'haqida') lockAdmin();
   window.scrollTo(0, 0);
 }
 
@@ -640,11 +1316,20 @@ function showTab(name){
     $('supportCard').hidden = true;
   }
 
+  // Til tanlash
+  var ls = $('lang');
+  UI_LANGS.forEach(function(l){ var o = E('option', null, l[1]); o.value = l[0]; ls.appendChild(o); });
+  ls.value = lang;
+  ls.addEventListener('change', function(){
+    if (ls.value === 'uz' || ls.value === 'ru' || ls.value === 'en'){
+      lang = ls.value; store('lang', lang); bump(S.langs, lang); saveStats(); relabel();
+    }
+  });
+
   var swBox = $('swBox');
-  THEMES.forEach(function(t, i){
+  THEMES.forEach(function(th, i){
     var b = E('button', 'sw'); b.type = 'button';
-    b.setAttribute('aria-label', t.n + ' rang');
-    b.style.background = t.l[0];
+    b.style.background = th.l[0];
     b.addEventListener('click', function(){ state.theme = i; store('theme', i); applyTheme(); });
     swBox.appendChild(b);
   });
@@ -654,9 +1339,12 @@ function showTab(name){
     if (mq.addEventListener) mq.addEventListener('change', applyTheme);
   }
   var rs = $('region');
-  CITIES.forEach(function(c, i){ var o = E('option', null, c.n); o.value = i; rs.appendChild(o); });
+  CITIES.forEach(function(c, i){ var o = E('option', null, ''); o.value = i; rs.appendChild(o); });
   rs.value = state.region;
-  rs.addEventListener('change', function(){ state.region = clampInt(rs.value, 0, CITIES.length - 1, 0); store('region', state.region); renderAll(); });
+  rs.addEventListener('change', function(){
+    state.region = clampInt(rs.value, 0, CITIES.length - 1, 0); store('region', state.region);
+    bump(S.regions, String(state.region)); saveStats(); renderAll();
+  });
 
   var ms = $('method');
   Object.keys(METHODS).forEach(function(k){ var o = E('option', null, METHODS[k].n); o.value = k; ms.appendChild(o); });
@@ -664,9 +1352,9 @@ function showTab(name){
   ms.addEventListener('change', function(){ if (ms.value in METHODS){ state.method = ms.value; store('method', state.method); renderAll(); } });
 
   var ab = $('adjBox');
-  Object.keys(NAMES).forEach(function(k){
+  ADJ_KEYS.forEach(function(k){
     var row = E('div', 'adj');
-    var lb = E('label', null, NAMES[k]); lb.setAttribute('for', 'adj_' + k);
+    var lb = E('label', null, ''); lb.setAttribute('for', 'adj_' + k);
     var inp = E('input'); inp.type = 'number'; inp.id = 'adj_' + k; inp.min = -15; inp.max = 15; inp.step = 1; inp.value = state.adj[k];
     inp.setAttribute('inputmode', 'numeric');
     inp.addEventListener('change', function(){
@@ -676,7 +1364,7 @@ function showTab(name){
   });
 
   var cs2 = $('cropSel');
-  CROPS.forEach(function(c, i){ var o = E('option', null, c.n); o.value = i; cs2.appendChild(o); });
+  CROPS.forEach(function(c, i){ var o = E('option', null, ''); o.value = i; cs2.appendChild(o); });
   cs2.value = state.crop;
   cs2.addEventListener('change', function(){ state.crop = clampInt(cs2.value, 0, CROPS.length - 1, 0); store('crop', state.crop); renderCrop(); });
 
@@ -684,12 +1372,17 @@ function showTab(name){
   $('seedBtn').addEventListener('click', useSeed);
   $('compassBtn').addEventListener('click', startCompass);
   setupPasswordChecker();
-  var bs = document.querySelectorAll('nav button');
-  for (var i = 0; i < bs.length; i++) bs[i].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); });
+  setupTranslator();
+  setupAdmin();
+  var bs = qsa('nav button');
+  for (var i = 0; i < bs.length; i++) bs[i].addEventListener('click', function(){ showTab(this.getAttribute('data-tab'), true); });
 
-  var t = store('tab');
-  showTab(t === 'dehqon' || t === 'xavfsizlik' || t === 'haqida' ? t : 'namoz');
-  renderAll();
+  // Har ochilishni sanash (faqat shu qurilmada)
+  S.opens++; bump(S.days, today()); bump(S.langs, lang); saveStats();
+
+  relabel();
+  var tb = store('tab');
+  showTab(TABS.indexOf(tb) > -1 ? tb : 'namoz', false);
   setInterval(tick, 1000);
   setInterval(renderNowCrops, 3600000);
 
