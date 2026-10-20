@@ -79,15 +79,22 @@ p{margin:6px 0}
 .pwd-checks{display:flex;flex-direction:column;gap:6px;font-size:14px}
 .pwd-checks div{color:var(--mut)}
 .pwd-crack{text-align:center;margin-top:10px}
+
+.petal{position:fixed;top:-40px;z-index:50;pointer-events:none;animation:petalfall linear infinite}
+@keyframes petalfall{to{transform:translateY(112vh) rotate(360deg)}}
+.statrow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
+.statrow b{font-variant-numeric:tabular-nums;text-align:right}
 </style>
+<base target="_blank">
 </head>
 <body>
 <header>
   <div class="brand">
     <div class="logo" aria-hidden="true">&#127807;</div>
-    <div><h1>foydale.uz</h1><p class="sub">Namoz va dehqon yordamchisi</p></div>
+    <div><h1>foydale.uz</h1><p class="sub" id="subLine">Namoz va dehqon yordamchisi</p></div>
   </div>
-  <label class="sel"><span>Viloyat</span><select id="region" aria-label="Viloyat"></select></label>
+  <label class="sel"><span id="regLbl">Viloyat</span><select id="region" aria-label="Viloyat"></select></label>
+  <label class="sel" style="margin-top:6px"><span id="langLbl">Til</span><select id="langSel" aria-label="Til"><option value="uz">O'zbek</option><option value="ru">Русский</option><option value="en">English</option></select></label>
 </header>
 
 <main>
@@ -101,11 +108,11 @@ p{margin:6px 0}
   <p class="date" id="todayLine"></p>
   <div class="card" id="times"></div>
   <details>
-    <summary>Haftalik jadval</summary>
+    <summary id="wkSum">Haftalik jadval</summary>
     <div class="in tw"><table id="week"></table></div>
   </details>
   <div class="card">
-    <h2>Qibla</h2>
+    <h2 id="qTitle">Qibla</h2>
     <p id="qText" class="mut"></p>
     <svg class="dial" viewBox="0 0 200 200" role="img" aria-label="Qibla yo'nalishi">
       <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="2"/>
@@ -120,15 +127,21 @@ p{margin:6px 0}
     <p class="mut" id="compassMsg" style="text-align:center"></p>
   </div>
   <details>
-    <summary>Sozlamalar</summary>
+    <summary id="setSum">Sozlamalar</summary>
     <div class="in">
-      <label class="mut" for="method">Hisoblash usuli</label>
+      <label class="mut" for="method" id="mLbl">Hisoblash usuli</label>
       <select id="method" style="width:100%"></select>
       <p class="mut">Asr vaqti hanafiy mazhabi bo'yicha (soya ikki baravar).</p>
       <p class="mut" style="margin-top:12px">Rasmiy taqvim bilan farq bo'lsa, daqiqa tuzatish kiriting (-15 dan +15 gacha):</p>
       <div id="adjBox"></div>
-      <p class="mut" style="margin-top:12px">Ilova rangi:</p>
+      <p class="mut" style="margin-top:12px" id="clrLbl">Ilova rangi:</p>
       <div class="chips" id="swBox"></div>
+      <p class="mut" style="margin-top:14px" id="ntLbl">Namoz eslatmalari:</p>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:4px">
+        <button type="button" class="alt" id="notifBtn">Eslatmani yoqish</button>
+        <span class="mut" id="notifState"></span>
+      </div>
+      <p class="mut" style="margin-top:8px">Eslatma ilova ochiq turganida, ruxsat berganingizda ishlaydi.</p>
     </div>
   </details>
   <div class="note">Vaqtlar quyosh holatidan telefon ichida hisoblanadi va viloyat markazi uchun. Boshqa shahar va tumanlarda bir necha daqiqa farq bo'lishi mumkin. Muhim holatlarda masjid yoki rasmiy taqvim bilan solishtiring.</div>
@@ -137,17 +150,17 @@ p{margin:6px 0}
 <!-- ================= DEHQON ================= -->
 <section id="tab-dehqon" hidden>
   <div class="card">
-    <h2>Hozir ekiladigan ekinlar</h2>
+    <h2 id="nowH">Hozir ekiladigan ekinlar</h2>
     <p class="mut" id="nowLine"></p>
     <div class="chips" id="nowCrops"></div>
   </div>
   <div class="card">
-    <h2>Ekin tanlang</h2>
+    <h2 id="cropH">Ekin tanlang</h2>
     <select id="cropSel" style="width:100%" aria-label="Ekin"></select>
     <div id="cropInfo"></div>
   </div>
   <div class="card">
-    <h2>Urug' hisoblagichi</h2>
+    <h2 id='seedH'>Urug' hisoblagichi</h2>
     <div class="grid2">
       <div><label class="mut" for="area">Maydon</label><input id="area" type="number" inputmode="decimal" min="0" step="any" placeholder="masalan, 20"></div>
       <div><label class="mut" for="unit">Birlik</label><select id="unit" style="width:100%"><option value="sotix">sotix</option><option value="ga">gektar</option></select></div>
@@ -166,7 +179,7 @@ p{margin:6px 0}
 <!-- ================= XAVFSIZLIK ================= -->
 <section id="tab-xavfsizlik" hidden>
   <div class="card">
-    <h2>🔐 Parol kuchini tekshirish</h2>
+    <h2 id="pwdH">🔐 Parol kuchini tekshirish</h2>
     <p class="mut">Parolingiz faqat shu yerda, telefoningizda qoladi — hech qayerga yuborilmaydi.</p>
     <div class="pwd-wrap">
       <input type="password" id="pwdInput" placeholder="Parolni shu yerga yozing..." autocomplete="off">
@@ -183,13 +196,17 @@ p{margin:6px 0}
 <!-- ================= HAQIDA ================= -->
 <section id="tab-haqida" hidden>
   <div class="card">
-    <h2>foydale.uz haqida</h2>
+    <h2 id="aboutH">foydale.uz haqida</h2>
     <p>Bepul ilova: viloyatlar bo'yicha namoz vaqtlari, qibla, dehqonlar uchun ekin kalendari va parol xavfsizligini tekshirish.</p>
     <p class="mut">Muallif: <strong id="author"></strong></p>
-    <p class="mut">Versiya 1.1</p>
+    <p class="mut" id="verLine">Versiya 1.2</p>
+  </div>
+  <div class="card" id="statsCard" hidden>
+    <h2>📊 Yopiq statistika — faqat muallif</h2>
+    <div id="statsBody"></div>
   </div>
   <div class="card" id="supportCard">
-    <h2>Yordam va aloqa</h2>
+    <h2 id="supH">Yordam va aloqa</h2>
     <p>Savol, xato yoki taklif bo'lsa, Telegramda yozing.</p>
     <p><a id="tgLink" class="btnlink" href="#" target="_blank" rel="noopener noreferrer">Telegramda yozish</a></p>
     <p class="mut" id="tgName"></p>
@@ -221,6 +238,139 @@ p{margin:6px 0}
 
 var AUTHOR = 'Bexruz'; // <-- muallif ismi
 var TELEGRAM = 'masudjonovich';   // <-- Telegram username'ingiz, @ belgisisiz
+var ADMIN_PWD = 'bexruz2026'; // <-- YOPIQ STATISTIKA paroli. Albatta o'z parolingizga almashtiring!
+
+var LANGS = {
+ uz:{navN:'Namoz',navD:'Dehqon',navX:'Xavfsizlik',navH:'Haqida',sub:'Namoz va dehqon yordamchisi',reg:'Viloyat',lang:'Til',
+   nx:'Keyingi namoz',wk:'Haftalik jadval',qb:'Qibla',set:'Sozlamalar',cmp:'Kompasni yoqish',mth:'Hisoblash usuli',clr:'Ilova rangi:',
+   nt:'Namoz eslatmalari:',ntOn:'Eslatmani yoqish',ntOff:"Eslatmani o'chirish",ntNo:'Bu qurilmada eslatma yoq',ntDeny:'brauzer rad etdi',ntMsg:" vaqti bo'ldi \uD83D\uDD4C",
+   now:'Hozir ekiladigan ekinlar',crops:'Ekin tanlang',seed:"Urug' hisoblagichi",calc:'Hisobla',seedBtn:"Odatiy me'yorni qo'y",
+   pwdH:'\uD83D\uDD10 Parol kuchini tekshirish',about:'foydale.uz haqida',sup:'Yordam va aloqa',
+   fajr:'Bomdod',dhuhr:'Peshin',asr:'Asr',maghrib:'Shom',isha:'Xufton',sun:'Quyosh',date:'Sana'},
+ ru:{navN:'Намаз',navD:'Фермер',navX:'Безопасность',navH:'О нас',sub:'Помощник намаза и фермера',reg:'Регион',lang:'Язык',
+   nx:'Следующий намаз',wk:'Расписание на неделю',qb:'Кибла',set:'Настройки',cmp:'Включить компас',mth:'Метод расчёта',clr:'Цвет приложения:',
+   nt:'Напоминания о намазе:',ntOn:'Включить',ntOff:'Выключить',ntNo:'Напоминания недоступны',ntDeny:'браузер запретил',ntMsg:' — время намаза \uD83D\uDD4C',
+   now:'Что сажать сейчас',crops:'Выберите культуру',seed:'Калькулятор семян',calc:'Посчитать',seedBtn:'Обычная норма',
+   pwdH:'\uD83D\uDD10 Проверка пароля',about:'О foydale.uz',sup:'Помощь и контакт',
+   fajr:'Фаджр',dhuhr:'Зухр',asr:'Аср',maghrib:'Магриб',isha:'Иша',sun:'Восход',date:'Дата'},
+ en:{navN:'Prayer',navD:'Farmer',navX:'Security',navH:'About',sub:'Prayer & farmer helper',reg:'Region',lang:'Language',
+   nx:'Next prayer',wk:'Weekly timetable',qb:'Qibla',set:'Settings',cmp:'Enable compass',mth:'Calculation method',clr:'App color:',
+   nt:'Prayer reminders:',ntOn:'Enable reminders',ntOff:'Disable',ntNo:'Not supported here',ntDeny:'browser blocked',ntMsg:' prayer time \uD83D\uDD4C',
+   now:'Crops to plant now',crops:'Choose crop',seed:'Seed calculator',calc:'Calculate',seedBtn:'Use default rate',
+   pwdH:'\uD83D\uDD10 Password strength',about:'About foydale.uz',sup:'Help & contact',
+   fajr:'Fajr',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha',sun:'Sunrise',date:'Date'}
+};
+function T(k){ return (LANGS[state.lang] || LANGS.uz)[k] !== undefined ? (LANGS[state.lang] || LANGS.uz)[k] : k; }
+
+function applyLang(){
+  var L = LANGS[state.lang] || LANGS.uz;
+  NAMES = { fajr: L.fajr, dhuhr: L.dhuhr, asr: L.asr, maghrib: L.maghrib, isha: L.isha };
+  PR = [['fajr',L.fajr],['sunrise',L.sun],['dhuhr',L.dhuhr],['asr',L.asr],['maghrib',L.maghrib],['isha',L.isha]];
+  function S(id, txt){ var e = $(id); if (e) e.textContent = txt; }
+  S('subLine', L.sub); S('regLbl', L.reg); S('langLbl', L.lang);
+  S('wkSum', L.wk); S('qTitle', L.qb); S('setSum', L.set); S('mLbl', L.mth); S('clrLbl', L.clr);
+  S('ntLbl', L.nt); S('nowH', L.now); S('cropH', L.crops); S('seedH', L.seed);
+  S('calcBtn', L.calc); S('seedBtn', L.seedBtn); S('pwdH', L.pwdH); S('aboutH', L.about); S('supH', L.sup);
+  S('compassBtn', L.cmp);
+  var map = { namoz: L.navN, dehqon: L.navD, xavfsizlik: L.navX, haqida: L.navH };
+  var bs = document.querySelectorAll('nav button');
+  for (var i = 0; i < bs.length; i++){
+    var k = bs[i].getAttribute('data-tab');
+    if (map[k] && bs[i].childNodes.length > 1) bs[i].childNodes[1].textContent = map[k];
+  }
+  document.documentElement.lang = state.lang;
+  renderAll();
+}
+
+function updateSeason(){
+  var m = nowTZ().m, spring = (m >= 3 && m <= 5);
+  if (spring){
+    var dark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var r = document.documentElement.style;
+    r.setProperty('--pri', dark ? '#7bd88f' : '#2f9e52');
+    r.setProperty('--pri2', dark ? '#213a24' : '#e7f7e4');
+    var mm = document.querySelector('meta[name="theme-color"]');
+    if (mm) mm.setAttribute('content', dark ? '#7bd88f' : '#2f9e52');
+  }
+  updatePetals(spring);
+}
+function updatePetals(on){
+  var old = document.querySelectorAll('.petal');
+  for (var i = 0; i < old.length; i++) old[i].parentNode.removeChild(old[i]);
+  if (!on) return;
+  var emo = ['\uD83C\uDF38','\uD83C\uDF37','\uD83C\uDF43','\uD83C\uDF3C'];
+  for (var j = 0; j < 12; j++){
+    var s = document.createElement('span');
+    s.className = 'petal'; s.textContent = emo[j % 4];
+    s.style.left = (Math.random() * 100) + 'vw';
+    s.style.animationDuration = (7 + Math.random() * 8) + 's';
+    s.style.animationDelay = (-Math.random() * 10) + 's';
+    s.style.fontSize = (14 + Math.random() * 14) + 'px';
+    s.style.opacity = String(0.5 + Math.random() * 0.5);
+    document.body.appendChild(s);
+  }
+}
+
+var notifTimers = [];
+function updateNotifBtn(){
+  var b = $('notifBtn'), s = $('notifState');
+  if (!('Notification' in window)){ b.hidden = true; s.textContent = T('ntNo'); return; }
+  if (state.notif){ b.textContent = T('ntOff'); s.textContent = 'ON'; }
+  else {
+    b.textContent = T('ntOn');
+    s.textContent = Notification.permission === 'denied' ? ('X ' + T('ntDeny')) : 'OFF';
+  }
+}
+function fireNotif(k){
+  try { new Notification('foydale.uz', { body: NAMES[k] + T('ntMsg') }); } catch (e) {}
+  if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+}
+function scheduleNotifs(){
+  for (var z = 0; z < notifTimers.length; z++) clearTimeout(notifTimers[z]);
+  notifTimers = [];
+  if (!state.notif) return;
+  var n = nowTZ(), t = dayTimes(n.y, n.m, n.d);
+  ['fajr','dhuhr','asr','maghrib','isha'].forEach(function(k){
+    var delay = (t[k] - n.min) * 60000;
+    if (delay > 3000) notifTimers.push(setTimeout(function(){ fireNotif(k); }, delay));
+  });
+  var tm = new Date(Date.UTC(n.y, n.m - 1, n.d + 1));
+  var tt = dayTimes(tm.getUTCFullYear(), tm.getUTCMonth() + 1, tm.getUTCDate());
+  var df = (1440 - n.min + tt.fajr) * 60000;
+  if (df > 3000) notifTimers.push(setTimeout(function(){ fireNotif('fajr'); scheduleNotifs(); }, df));
+}
+var lastSchedKey = '';
+function scheduleNotifsCheck(){
+  if (!state.notif) return;
+  var n = nowTZ(), key = n.y + '-' + n.m + '-' + n.d + '-' + Math.floor(n.min);
+  if (key !== lastSchedKey){ lastSchedKey = key; scheduleNotifs(); }
+}
+
+var verTaps = 0, verTimer = null;
+function onVerTap(){
+  verTaps++;
+  clearTimeout(verTimer);
+  verTimer = setTimeout(function(){ verTaps = 0; }, 2500);
+  if (verTaps >= 5){
+    verTaps = 0;
+    var p = prompt('Muallif paroli:');
+    if (p === ADMIN_PWD){ $('statsCard').hidden = false; renderStats(); }
+  }
+}
+function renderStats(){
+  var b = $('statsBody'); b.textContent = '';
+  function row(k, v){ var d = E('div', 'statrow'); d.appendChild(E('span', 'mut', k)); d.appendChild(E('b', null, String(v))); b.appendChild(d); }
+  var m = nowTZ().m;
+  row('Jami ochishlar', store('opens_total') || '0');
+  row('Bugungi ochishlar', store('opens_today') || '0');
+  row("So'nggi tashrif", store('last_visit') || '-');
+  row('Qurilma', (navigator.userAgent || '').slice(0, 64));
+  row('Ekran', screen.width + 'x' + screen.height);
+  row('Tizim tili', navigator.language || '-');
+  row('Tanlangan viloyat', CITIES[state.region].n);
+  row('Ilova tili', state.lang);
+  row('Sezon', (m >= 3 && m <= 5) ? 'Bahor rejimi (faol)' : 'Oddiy rejim');
+}
 
 //#PURE-START
 var TZ = 5; // O'zbekiston: UTC+5, yozgi vaqt yo'q
@@ -365,6 +515,8 @@ var state = {
   region: clampInt(store('region'), 0, CITIES.length - 1, 0),
   method: (store('method') in METHODS) ? store('method') : 'mwl',
   crop: clampInt(store('crop'), 0, CROPS.length - 1, 0),
+  lang: (store('lang') in LANGS) ? store('lang') : 'uz',
+  notif: store('notif') === '1',
   adj: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }
 };
 (function loadAdj(){
@@ -414,7 +566,7 @@ function renderWeek(n){
   var tb = $('week');
   tb.textContent = '';
   var hr = E('tr');
-  ['Sana','Bomdod','Quyosh','Peshin','Asr','Shom','Xufton'].forEach(function(h){ hr.appendChild(E('th', null, h)); });
+  [T('date'), NAMES.fajr, T('sun'), NAMES.dhuhr, NAMES.asr, NAMES.maghrib, NAMES.isha].forEach(function(h){ hr.appendChild(E('th', null, h)); });
   tb.appendChild(hr);
   for (var i = 0; i < 7; i++){
     var dt = new Date(Date.UTC(n.y, n.m - 1, n.d + i));
@@ -441,13 +593,14 @@ function tick(){
   }
   var secs = Math.max(0, Math.round((target - n.min) * 60));
   var hh = Math.floor(secs / 3600), mm = Math.floor((secs % 3600) / 60), ss = secs % 60;
-  $('nxName').textContent = 'Keyingi namoz: ' + NAMES[nxt];
+  $('nxName').textContent = T('nx') + ': ' + NAMES[nxt];
   $('nxTime').textContent = fmt(target);
   $('nxLeft').textContent = pad(hh) + ':' + pad(mm) + ':' + pad(ss) + ' dan keyin';
   var rows = $('times').children;
   for (var j = 0; j < rows.length; j++){
     rows[j].className = 'row' + (rows[j].getAttribute('data-key') === nxt && target < 1440 ? ' on' : '');
   }
+  scheduleNotifsCheck();
 }
 
 var heading = 0, qb = 0;
@@ -612,6 +765,7 @@ function applyTheme(){
   if (m) m.setAttribute('content', p[0]);
   var sw = document.querySelectorAll('.sw');
   for (var i = 0; i < sw.length; i++) sw[i].setAttribute('aria-pressed', String(i === state.theme));
+  updateSeason();
 }
 
 function renderAll(){
@@ -692,6 +846,42 @@ function showTab(name){
   renderAll();
   setInterval(tick, 1000);
   setInterval(renderNowCrops, 3600000);
+
+  applyLang();
+  var lg = $('langSel');
+  lg.value = state.lang;
+  lg.addEventListener('change', function(){
+    state.lang = (lg.value in LANGS) ? lg.value : 'uz';
+    store('lang', state.lang);
+    applyLang();
+    updateNotifBtn();
+  });
+  $('notifBtn').addEventListener('click', function(){
+    if (state.notif){
+      state.notif = false; store('notif', '0');
+      for (var z = 0; z < notifTimers.length; z++) clearTimeout(notifTimers[z]);
+      notifTimers = [];
+      updateNotifBtn(); return;
+    }
+    if (!('Notification' in window)) return;
+    Notification.requestPermission().then(function(r){
+      if (r === 'granted'){ state.notif = true; store('notif', '1'); }
+      updateNotifBtn();
+    }).catch(function(){});
+  });
+  updateNotifBtn();
+  $('verLine').addEventListener('click', onVerTap);
+  try {
+    var n0 = nowTZ();
+    var dk = 'opens_' + n0.y + '_' + n0.m + '_' + n0.d;
+    if (!store(dk)){
+      store(dk, '1');
+      store('opens_total', String((parseInt(store('opens_total') || '0', 10) || 0) + 1));
+    }
+    store('opens_today', store(dk));
+    var lt = new Date();
+    store('last_visit', pad(n0.d) + '.' + pad(n0.m) + '.' + n0.y + ' ' + pad(lt.getHours()) + ':' + pad(lt.getMinutes()));
+  } catch (e) {}
 
   if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0){
     navigator.serviceWorker.register('sw.js').catch(function(){});
