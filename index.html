@@ -70,6 +70,15 @@ nav button[aria-selected="true"]{background:var(--pri2);color:var(--ink)}
 .dial .arrow polygon,.dial .arrow circle{fill:var(--pri)}
 [hidden]{display:none!important}
 p{margin:6px 0}
+.pwd-wrap{position:relative}
+.pwd-wrap input{width:100%;padding-right:40px}
+.pwd-eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:17px;user-select:none}
+.pwd-meter-wrap{height:8px;background:var(--bg);border-radius:6px;margin:14px 0 6px;overflow:hidden;border:1px solid var(--line)}
+.pwd-meter-fill{height:100%;width:0%;border-radius:6px;transition:width .3s ease,background .3s ease}
+.pwd-label{text-align:center;font-weight:700;margin-bottom:14px;min-height:20px}
+.pwd-checks{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.pwd-checks div{color:var(--mut)}
+.pwd-crack{text-align:center;margin-top:10px}
 </style>
 </head>
 <body>
@@ -154,13 +163,30 @@ p{margin:6px 0}
   <div class="note">Ekish muddatlari taxminiy: yil ob-havosi, nav va tuproqqa qarab bir-ikki hafta o'zgaradi. Aniq muddatni tuman qishloq xo'jaligi bo'limi yoki agronomdan so'rang.</div>
 </section>
 
+<!-- ================= XAVFSIZLIK ================= -->
+<section id="tab-xavfsizlik" hidden>
+  <div class="card">
+    <h2>🔐 Parol kuchini tekshirish</h2>
+    <p class="mut">Parolingiz faqat shu yerda, telefoningizda qoladi — hech qayerga yuborilmaydi.</p>
+    <div class="pwd-wrap">
+      <input type="password" id="pwdInput" placeholder="Parolni shu yerga yozing..." autocomplete="off">
+      <span class="pwd-eye" id="pwdEye">👁️</span>
+    </div>
+    <div class="pwd-meter-wrap"><div class="pwd-meter-fill" id="pwdMeter"></div></div>
+    <div class="pwd-label" id="pwdLabel">Parol kiriting</div>
+    <div class="pwd-checks" id="pwdChecks"></div>
+    <p class="mut pwd-crack" id="pwdCrack"></p>
+  </div>
+  <div class="note">Maslahat: uzun va eslab qolish oson jumla eng kuchli parol hisoblanadi, masalan "Men2010YilidaMaktabniTamomladim!" kabi. Har bir sayt uchun boshqa parol ishlating va imkon bo'lsa ikki bosqichli tasdiqlash (2FA) yoqing.</div>
+</section>
+
 <!-- ================= HAQIDA ================= -->
 <section id="tab-haqida" hidden>
   <div class="card">
     <h2>foydale.uz haqida</h2>
-    <p>Bepul ilova: viloyatlar bo'yicha namoz vaqtlari, qibla va dehqonlar uchun ekin kalendari.</p>
+    <p>Bepul ilova: viloyatlar bo'yicha namoz vaqtlari, qibla, dehqonlar uchun ekin kalendari va parol xavfsizligini tekshirish.</p>
     <p class="mut">Muallif: <strong id="author"></strong></p>
-    <p class="mut">Versiya 1.0</p>
+    <p class="mut">Versiya 1.1</p>
   </div>
   <div class="card" id="supportCard">
     <h2>Yordam va aloqa</h2>
@@ -173,6 +199,7 @@ p{margin:6px 0}
     <p>Ilova hech qanday ma'lumot yig'maydi va internetga ma'lumot yubormaydi. Ro'yxatdan o'tish, reklama va kuzatuv yo'q. Faqat "Telegramda yozish" tugmasini o'zingiz bossangiz, Telegram ochiladi.</p>
     <p>Faqat tanlagan viloyatingiz va sozlamalaringiz shu telefonning o'zida saqlanadi.</p>
     <p>Joylashuv va boshqa ruxsatlar so'ralmaydi. Kompas faqat siz tugmani bossangiz ishlaydi.</p>
+    <p>Parol tekshiruvchi ham to'liq telefon ichida ishlaydi — kiritilgan parol hech qachon internetga yuborilmaydi.</p>
   </div>
   <div class="card">
     <h2>Telefonga o'rnatish</h2>
@@ -184,6 +211,7 @@ p{margin:6px 0}
 <nav aria-label="Bo'limlar"><div class="in">
   <button type="button" data-tab="namoz" aria-selected="true"><span class="ic">&#128332;</span>Namoz</button>
   <button type="button" data-tab="dehqon" aria-selected="false"><span class="ic">&#127806;</span>Dehqon</button>
+  <button type="button" data-tab="xavfsizlik" aria-selected="false"><span class="ic">&#128272;</span>Xavfsizlik</button>
   <button type="button" data-tab="haqida" aria-selected="false"><span class="ic">&#8505;</span>Haqida</button>
 </div></nav>
 
@@ -220,7 +248,6 @@ var METHODS = {
   kar: { n: 'Karachi (Bomdod 18°, Xufton 18°)', f: 18, i: 18 }
 };
 
-// soat (kasr) ko'rinishida: fajr, sunrise, dhuhr, asr, maghrib, isha
 function prayerTimes(lat, lng, y, m, d, method){
   var jd = Date.UTC(y, m - 1, d) / 86400000 + 2440587.5;
   var sp = sunPos(jd + 0.5 - lng / 360);
@@ -256,7 +283,6 @@ function qiblaBearing(lat, lng){
 var MONTHS = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
 function fmtDate(ms){ var dt = new Date(ms); return dt.getUTCDate() + '-' + MONTHS[dt.getUTCMonth()]; }
 
-// windows: [[m1,d1,m2,d2], ...]; off: viloyat bo'yicha kun siljishi
 function cropStatus(windows, off, y, m, d){
   var today = Date.UTC(y, m - 1, d), DAY = 86400000;
   var best = null;
@@ -314,6 +340,10 @@ var CROPS = [
     tip: 'Tuproq yaxshi isib, qirov xavfi o\'tgach ekiladi. Pishish davrida suvni kamaytiring.' }
 ];
 
+var COMMON_PWDS = ['password','123456','12345678','qwerty','111111','123123','admin','parol','parol123',
+  'qwerty123','1234567890','password1','12345','iloveyou','abc123','letmein','welcome','monkey','dragon',
+  'sunshine','123456789','000000','1234','uzbekistan','tashkent'];
+
 var $ = function(id){ return document.getElementById(id); };
 function E(tag, cls, txt){ var e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
 function store(k, v){
@@ -360,7 +390,6 @@ function dayTimes(y, m, d){
   return out;
 }
 
-/* ---------- NAMOZ ---------- */
 var shownKey = '';
 function renderTimes(){
   var n = nowTZ();
@@ -421,7 +450,6 @@ function tick(){
   }
 }
 
-/* ---------- QIBLA ---------- */
 var heading = 0, qb = 0;
 function dirName(b){
   var names = ['shimol','shimoli-sharq','sharq','janubi-sharq','janub','janubi-g\'arb','g\'arb','shimoli-g\'arb'];
@@ -460,7 +488,6 @@ function startCompass(){
   } else go();
 }
 
-/* ---------- DEHQON ---------- */
 function statusText(st){
   if (!st) return 'Muddat topilmadi.';
   if (st.state === 'now') return 'Hozir ekish vaqti. Muddat tugashiga ' + st.left + ' kun qoldi (' + fmtDate(st.end) + ' gacha).';
@@ -512,7 +539,68 @@ function useSeed(){
   else { out.hidden = false; out.textContent = 'Bu ekin uchun odatiy me\'yor qo\'yilmagan. Agronomdan so\'rab, o\'zingiz kiriting.'; }
 }
 
-/* ---------- RANG ---------- */
+function pwdFormatTime(sec){
+  if (sec < 1) return 'bir zumda';
+  var units = [[31536000000,'ming yil'],[31536000,'yil'],[2592000,'oy'],[86400,'kun'],[3600,'soat'],[60,'daqiqa'],[1,'soniya']];
+  for (var i = 0; i < units.length; i++){
+    if (sec >= units[i][0]) return Math.floor(sec / units[i][0]) + ' ' + units[i][1];
+  }
+  return 'bir zumda';
+}
+function setupPasswordChecker(){
+  var input = $('pwdInput'), eye = $('pwdEye'), meter = $('pwdMeter'), label = $('pwdLabel'),
+      checksBox = $('pwdChecks'), crack = $('pwdCrack');
+  var items = [['len','Kamida 8 ta belgi'],['upper','Katta harf (A-Z)'],['lower','Kichik harf (a-z)'],
+    ['num','Raqam (0-9)'],['sym','Maxsus belgi (!@#$...)'],['common','Oddiy/mashhur parol emas']];
+  items.forEach(function(it){
+    var row = E('div', null, '○ ' + it[1]);
+    row.id = 'pwd-' + it[0];
+    checksBox.appendChild(row);
+  });
+  eye.addEventListener('click', function(){
+    input.type = input.type === 'password' ? 'text' : 'password';
+    eye.textContent = input.type === 'password' ? '👁️' : '🙈';
+  });
+  input.addEventListener('input', function(){
+    var v = input.value;
+    if (!v){
+      meter.style.width = '0%'; meter.style.background = '';
+      label.textContent = 'Parol kiriting'; label.style.color = 'var(--mut)';
+      crack.textContent = '';
+      items.forEach(function(it){ var r = $('pwd-' + it[0]); r.style.color = 'var(--mut)'; r.textContent = '○ ' + it[1]; });
+      return;
+    }
+    var hasLen = v.length >= 8, hasUpper = /[A-Z]/.test(v), hasLower = /[a-z]/.test(v),
+        hasNum = /[0-9]/.test(v), hasSym = /[^A-Za-z0-9]/.test(v);
+    var isCommon = COMMON_PWDS.indexOf(v.toLowerCase()) > -1;
+    var vals = { len: hasLen, upper: hasUpper, lower: hasLower, num: hasNum, sym: hasSym, common: !isCommon };
+    items.forEach(function(it){
+      var ok = vals[it[0]], r = $('pwd-' + it[0]);
+      r.style.color = ok ? '#2f9e52' : 'var(--mut)';
+      r.textContent = (ok ? '✓ ' : '○ ') + it[1];
+    });
+    var score = [hasLen, hasUpper, hasLower, hasNum, hasSym, !isCommon].filter(Boolean).length;
+    if (isCommon) score = Math.min(score, 1);
+    var pct, color, text;
+    if (score <= 2){ pct = 25; color = '#e04b4b'; text = '❌ Zaif parol'; }
+    else if (score <= 4){ pct = 60; color = '#d98c1f'; text = '⚠️ O\'rtacha parol'; }
+    else { pct = 100; color = '#2f9e52'; text = '✅ Kuchli parol'; }
+    meter.style.width = pct + '%'; meter.style.background = color;
+    label.textContent = text; label.style.color = color;
+    var charset = 0;
+    if (hasLower) charset += 26;
+    if (hasUpper) charset += 26;
+    if (hasNum) charset += 10;
+    if (hasSym) charset += 32;
+    if (!charset) charset = 26;
+    var combos = Math.pow(charset, v.length);
+    var seconds = combos / 1e9 / 2;
+    crack.textContent = isCommon
+      ? 'Buzish vaqti: bir necha soniya (mashhur parollar ro\'yxatida bor)'
+      : ('Taxminiy buzish vaqti: ' + pwdFormatTime(seconds));
+  });
+}
+
 function applyTheme(){
   var dark = !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
   var p = dark ? THEMES[state.theme].d : THEMES[state.theme].l;
@@ -526,7 +614,6 @@ function applyTheme(){
   for (var i = 0; i < sw.length; i++) sw[i].setAttribute('aria-pressed', String(i === state.theme));
 }
 
-/* ---------- UI ---------- */
 function renderAll(){
   shownKey = '';
   renderQibla();
@@ -535,7 +622,7 @@ function renderAll(){
   renderCrop();
 }
 function showTab(name){
-  ['namoz','dehqon','haqida'].forEach(function(t){ $('tab-' + t).hidden = (t !== name); });
+  ['namoz','dehqon','xavfsizlik','haqida'].forEach(function(t){ $('tab-' + t).hidden = (t !== name); });
   var bs = document.querySelectorAll('nav button');
   for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-selected', bs[i].getAttribute('data-tab') === name ? 'true' : 'false');
   store('tab', name);
@@ -596,11 +683,12 @@ function showTab(name){
   $('calcBtn').addEventListener('click', calc);
   $('seedBtn').addEventListener('click', useSeed);
   $('compassBtn').addEventListener('click', startCompass);
+  setupPasswordChecker();
   var bs = document.querySelectorAll('nav button');
   for (var i = 0; i < bs.length; i++) bs[i].addEventListener('click', function(){ showTab(this.getAttribute('data-tab')); });
 
   var t = store('tab');
-  showTab(t === 'dehqon' || t === 'haqida' ? t : 'namoz');
+  showTab(t === 'dehqon' || t === 'xavfsizlik' || t === 'haqida' ? t : 'namoz');
   renderAll();
   setInterval(tick, 1000);
   setInterval(renderNowCrops, 3600000);
